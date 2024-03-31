@@ -1,12 +1,12 @@
-'''
+"""
 Created on Dec 10, 2021
 
 @author: Cyrus
-'''
+"""
 
 start_level_ids = {
     "SM - Main": 0x1,
-#     "SM - Banjo's House": 0x8C,
+    #     "SM - Banjo's House": 0x8C,
     "MM - Main": 0x2,
     "MM - Ticker's Tower": 0xC,
     "MM - Mumbo's Skull": 0xE,
@@ -107,4 +107,4 @@ start_level_ids = {
     "GL - Furnace Fun": 0x8E,
     "GL - Door Of Grunty Room": 0x93,
     "Final Battle": 0x90,
-    }
+}

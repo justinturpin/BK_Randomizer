@@ -6,3 +6,6 @@ Last_Used_Configuration.json
 *.z64
 Git_Commit_Message.txt
 Randomizer_Log_File.log*
+__pycache__
+.venv
+.mypy_cache

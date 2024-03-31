@@ -1,78 +1,96 @@
-'''
+"""
 Created on Oct 19, 2021
 
 @author: Cyrus
-'''
+"""
 
 #####################
 ### PYTHON IMPORT ###
 #####################
 
-from random import seed, shuffle
-import mmap
 import json
+import mmap
+from random import seed, shuffle
+
+from Randomization_Processes.Common_Functions import (
+    get_address_endpoints,
+    leading_zeros,
+)
+from Randomization_Processes.pathhelper import BkRandoPaths
 
 ###################
 ### FILE IMPORT ###
 ###################
 
-from Randomization_Processes.Common_Functions import get_address_endpoints, leading_zeros
 
 #########################
 ### MUSIC MANIP CLASS ###
 #########################
 
-class Music_Manipulation_Class():
-    '''Music manipulation class'''
-    def __init__(self, seed_val, file_dir, randomized_rom_path, music_dict, short_sounds_var, jingles_var, music_var):
-        '''Initializes the music manipulation class'''
-        self._file_dir = file_dir
-        self._randomized_rom_path = randomized_rom_path
-        with open(self._randomized_rom_path, "rb") as file:
-            self._file_bytes = file.read()
+
+class Music_Manipulation_Class:
+    """Music manipulation class"""
+
+    def __init__(
+        self,
+        seed_val: int,
+        paths: BkRandoPaths,
+        music_dict: dict[str, dict[str, str]],
+        short_sounds_var,
+        jingles_var,
+        music_var,
+    ):
+        self._paths = paths
+        self._file_bytes = paths.rom_path.read_bytes()
         self._seed_val = seed_val
         self._pointers_start = 0x10750
         self._pointers_end = 0x10CA8
-        self._music_address_dict = {}
+        self._music_address_dict: dict[str, dict[str, str]] = {}
         self._short_sounds_var = short_sounds_var
         self._jingles_var = jingles_var
         self._music_var = music_var
         self._music_dict = music_dict
-        self._sound_pointer_dict = {}
-    
-    def _grab_compressed_file(self):
-        '''Uses the pointer to find the beginning and end of a music file and extracts it'''
+        self._sound_pointer_dict: dict[str, dict[str, str]] = {}
+
+    def _grab_compressed_file(self) -> None:
+        """
+        Uses the pointer to find the beginning and end of a music file and extracts it
+        """
         for pointer in range(self._pointers_start, self._pointers_end + 0x08, 0x08):
             pointer_str = f"0x{(str(hex(pointer))[2:]).upper()}"
             (address1, address2) = get_address_endpoints(self._file_bytes, pointer_str)
-            with open(f"{self._file_dir}Randomized_ROM/{pointer_str[2:]}-Compressed.bin", "w+b") as comp_file:
+            comp_path = self._paths.compressed_path(f"{pointer_str[2:]}")
+            with comp_path.open("w+b") as comp_file:
                 for index in range(address1, address2):
                     hex_string = str(hex(self._file_bytes[index]))[2:]
-                    if(len(hex_string) < 2):
+                    if len(hex_string) < 2:
                         hex_string = "0" + hex_string
                     comp_file.write(bytes.fromhex(hex_string))
-    
-    def _place_compressed_files(self):
-        '''Replaces the music pointers with the new music file'''
+
+    def _place_compressed_files(self) -> None:
+        """
+        Replaces the music pointers with the new music file
+        """
         for pointer in range(self._pointers_start, self._pointers_end + 0x08, 0x08):
-#             print("~~~~")
+            #             print("~~~~")
             pointer_str = str(hex(pointer))
             pointer_dec = int(pointer_str[2:], 16)
-            if(pointer_str in self._music_address_dict):
+            if pointer_str in self._music_address_dict:
                 curr_pointer_file = self._music_address_dict[pointer_str]
             else:
                 curr_pointer_file = f"{pointer_str[2:]}-Compressed.bin"
-            with open(f"{self._file_dir}Randomized_ROM/{curr_pointer_file}", "r+b") as comp_file:
+            comp_path = self._paths.randomized_rom_dir / curr_pointer_file
+            with comp_path.open("r+b") as comp_file:
                 pointer_content = comp_file.read()
-            with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as rom_file:
+            with self._paths.rom_path.open("r+b") as rom_file:
                 mm_rand_rom = mmap.mmap(rom_file.fileno(), 0)
-#                 print(f"Pointer Str: {pointer_str}   Pointer File: {curr_pointer_file}")
+                #                 print(f"Pointer Str: {pointer_str}   Pointer File: {curr_pointer_file}")
                 # Find The Pointer Start
                 pointer_start = ""
                 for offset in range(4):
                     pointer_start += leading_zeros(mm_rand_rom[pointer_dec + offset], 2)
                 address_start = int("0x" + pointer_start, 16) + int("0x10CD0", 16)
-#                 print(f"Start: {hex(address_start)}   End: {hex(address_start + len(pointer_content))}")
+                #                 print(f"Start: {hex(address_start)}   End: {hex(address_start + len(pointer_content))}")
                 curr_pointer_index = 0
                 for index in range(address_start, address_start + len(pointer_content)):
                     mm_rand_rom[index] = pointer_content[curr_pointer_index]
@@ -83,38 +101,48 @@ class Music_Manipulation_Class():
                 mm_rand_rom[pointer_dec + 9] = int(address_end_hex[2:4], 16)
                 mm_rand_rom[pointer_dec + 10] = int(address_end_hex[4:6], 16)
                 mm_rand_rom[pointer_dec + 11] = int(address_end_hex[6:], 16)
-#                 print(f"Address End Hex: {address_end_hex}")
-        if((mm_rand_rom[self._pointers_end + 8] != 0x0) or
-           (mm_rand_rom[self._pointers_end + 9] != 0xD7) or
-           (mm_rand_rom[self._pointers_end + 10] != 0x39) or
-           (mm_rand_rom[self._pointers_end + 11] != 0xE8)):
+        #                 print(f"Address End Hex: {address_end_hex}")
+        if (
+            (mm_rand_rom[self._pointers_end + 8] != 0x0)
+            or (mm_rand_rom[self._pointers_end + 9] != 0xD7)
+            or (mm_rand_rom[self._pointers_end + 10] != 0x39)
+            or (mm_rand_rom[self._pointers_end + 11] != 0xE8)
+        ):
             print("Last Pointer Doesn't Match")
             raise SystemError
-    
+
     def _shuffle_list(self, original_list):
-        '''Shuffles a given list'''
+        """
+        Shuffles a given list
+        """
         seed(a=self._seed_val)
         shuffle(original_list)
         return original_list
-    
-    def _generate_cheat_sheet(self):
+
+    def _generate_cheat_sheet(self) -> None:
         cheat_sheet_dict = {}
         for sound_pointer in self._music_address_dict:
-            cheat_sheet_dict[self._sound_pointer_dict[f"0x{sound_pointer[2:].upper()}"]] = self._sound_pointer_dict[f"0x{self._music_address_dict[sound_pointer].split('-')[0]}"]
-        with open(f"{self._file_dir}Randomized_ROM/MUSIC_CHEAT_SHEET_{self._seed_val}.json", "w+") as json_file: 
+            cheat_sheet_dict[
+                self._sound_pointer_dict[f"0x{sound_pointer[2:].upper()}"]
+            ] = self._sound_pointer_dict[
+                f"0x{self._music_address_dict[sound_pointer].split('-')[0]}"
+            ]
+        with self._paths.music_cheat_sheet_path.open("w+") as json_file:
             json.dump(cheat_sheet_dict, json_file, indent=4)
-    
-    def _music_manip_main(self):
-        '''Runs through the functions of extracting, shuffling, and reinserting the music files'''
+
+    def _music_manip_main(self) -> None:
+        """
+        Runs through the functions of extracting, shuffling, and reinserting the music files
+        """
         # Grab All Files
         self._grab_compressed_file()
         # Main Categories
         music_categories = []
-        if(self._short_sounds_var == 1):
+        if self._short_sounds_var == 1:
             music_categories.append("Short")
-        if(self._jingles_var == 1):
+        if self._jingles_var == 1:
             music_categories.append("Jingle")
-        if(self._music_var == 1):
+        if self._music_var == 1:
             music_categories.append("Music")
         pointer_dict = {}
         for category in self._music_dict:
@@ -123,19 +151,25 @@ class Music_Manipulation_Class():
             pointer_dict[category] = []
             for pointer_str in self._music_dict[category]:
                 pointer_dict[category].append(f"{pointer_str[2:]}-Compressed.bin")
-                self._music_address_dict[pointer_str.lower()] = f"{pointer_str[2:]}-Compressed.bin"
-                self._sound_pointer_dict[pointer_str] = self._music_dict[category][pointer_str]
+                self._music_address_dict[pointer_str.lower()] = (
+                    f"{pointer_str[2:]}-Compressed.bin"
+                )
+                self._sound_pointer_dict[pointer_str] = self._music_dict[category][
+                    pointer_str
+                ]
         for category in self._music_dict:
             # Shuffle Compressed Files
             category_pointer_list = []
             for item in pointer_dict[category]:
                 category_pointer_list.append(item)
-            if(category in music_categories):
+            if category in music_categories:
                 category_pointer_list = self._shuffle_list(category_pointer_list)
             # Assign New Files
             list_counter = 0
             for pointer_str in self._music_dict[category]:
-                self._music_address_dict[pointer_str.lower()] = category_pointer_list[list_counter]
+                self._music_address_dict[pointer_str.lower()] = category_pointer_list[
+                    list_counter
+                ]
                 list_counter += 1
         # Replace Compressed Files Into ROM
         self._place_compressed_files()

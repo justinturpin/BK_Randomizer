@@ -1,45 +1,59 @@
-'''
+"""
 Created on Aug 31, 2021
 
 @author: Cyrus
-'''
+"""
 
 #####################
 ### PYTHON IMPORT ###
 #####################
 
 from mmap import mmap
+from typing import Any
+
+from Randomization_Processes.Common_Functions import leading_zeros
+from Randomization_Processes.pathhelper import BkRandoPaths
 
 ###################
 ### FILE IMPORT ###
 ###################
 
-from Randomization_Processes.Common_Functions import leading_zeros
 
 ###########################
 ### GENERIC MODEL CLASS ###
 ###########################
 
-class Model():
-    '''Generic model class'''
-    def __init__(self, file_dir, address, original_index_start=0):
-        '''Initializes generic model class'''
-        self._file_dir = file_dir
+
+class Model:
+    """
+    Generic model base class
+    """
+
+    def __init__(
+        self, paths: BkRandoPaths, address: str, original_index_start: int = 0
+    ) -> None:
+        self._paths = paths
         self.address = address
         self._create_mm()
         self.original_index_start = original_index_start
         self.original_index_end = len(self.mm)
-    
-    def _create_mm(self):
-        '''Creates the currently used mmap for the model'''
-        with open(f"{self._file_dir}Randomized_ROM/{self.address}-Decompressed.bin", "r+b") as f:
+        self.model_vertex_dict: dict[str, Any] = {}
+        self.model_vertex_location_dict: dict[str, Any] = {}
+        self.model_texture_dict: dict[str, Any] = {}
+
+    def _create_mm(self) -> None:
+        """
+        Creates the currently used mmap for the model
+        """
+
+        with self._paths.decompressed_path(self.address).open("r+b") as f:
             self.mm = mmap(f.fileno(), 0)
 
-    def _close_mm(self):
+    def _close_mm(self) -> None:
         self.mm.close()
 
-    def _vertex_change_color(self, body_part, new_color):
-        '''
+    def _vertex_change_color(self, body_part, new_color) -> None:
+        """
         Changes the current vertex shading color to another color
         # 000008 - Black            FF0C0C - Red            09FF09 - Light Green    001C8C - Blue
         # 214508 - Swamp            31658C - Eastern Blue   4B9D09 - Green          52AA8C - Teal
@@ -48,18 +62,18 @@ class Model():
         # 3165FF - Cosmos           438B7C - Turquoise      52AAFF - Sky Blue       73EFFF - Baby Blue
         # 9C31FF - Violet           AF567D - Salmon         BD75FF - Lavender       D09C7C - Dark Tan
         # DEBAFF - Light Pink       FFFFFF - White          FF00FF - Magenta        00FFFF - Cyan
-        '''
-        if(len(new_color) == 6):
+        """
+        if len(new_color) == 6:
             new_color_red = int(new_color[:2], 16)
             new_color_green = int(new_color[2:4], 16)
             new_color_blue = int(new_color[4:6], 16)
             new_color_alpha = 0xFF
-        elif(len(new_color) == 8):
+        elif len(new_color) == 8:
             new_color_red = int(new_color[:2], 16)
             new_color_green = int(new_color[2:4], 16)
             new_color_blue = int(new_color[4:6], 16)
             new_color_alpha = int(new_color[6:], 16)
-        elif(int(new_color, 16) == 0):
+        elif int(new_color, 16) == 0:
             new_color_red = 0
             new_color_green = 0
             new_color_blue = 0
@@ -68,28 +82,32 @@ class Model():
             print(f"Not 6/8 Digits For RRGGBBAA: {body_part} {new_color}")
             return
         for color_string in self.model_vertex_dict[body_part]:
-            for item_index in range(self.original_index_start+4, self.original_index_end+4, 16):
-                if((self.mm[item_index] == int(color_string[:2], 16)) and
-                   (self.mm[item_index + 1] == int(color_string[2:4], 16)) and
-                   (self.mm[item_index + 2] == int(color_string[4:6], 16)) and
-                   (self.mm[item_index + 3] == int(color_string[6:], 16))):
+            for item_index in range(
+                self.original_index_start + 4, self.original_index_end + 4, 16
+            ):
+                if (
+                    (self.mm[item_index] == int(color_string[:2], 16))
+                    and (self.mm[item_index + 1] == int(color_string[2:4], 16))
+                    and (self.mm[item_index + 2] == int(color_string[4:6], 16))
+                    and (self.mm[item_index + 3] == int(color_string[6:], 16))
+                ):
                     self.mm[item_index] = new_color_red
                     self.mm[item_index + 1] = new_color_green
                     self.mm[item_index + 2] = new_color_blue
                     self.mm[item_index + 3] = new_color_alpha
 
     def _vertex_model_subsection_color_change(self, body_part, new_color):
-        if(len(new_color) == 6):
+        if len(new_color) == 6:
             new_color_red = int(new_color[:2], 16)
             new_color_green = int(new_color[2:4], 16)
             new_color_blue = int(new_color[4:6], 16)
             new_color_alpha = 0xFF
-        elif(len(new_color) == 8):
+        elif len(new_color) == 8:
             new_color_red = int(new_color[:2], 16)
             new_color_green = int(new_color[2:4], 16)
             new_color_blue = int(new_color[4:6], 16)
             new_color_alpha = int(new_color[6:], 16)
-        elif(int(new_color, 16) == 0):
+        elif int(new_color, 16) == 0:
             new_color_red = 0
             new_color_green = 0
             new_color_blue = 0
@@ -105,7 +123,7 @@ class Model():
                 self.mm[item_index + 3] = new_color_alpha
 
     def _texture_change_color(self, texture_part, new_color):
-        '''
+        """
         Changes the current texture color to another color
         # 0001 - Black           F841 - Red           0FE1 - Light Green   00D1 - Blue
         # 0301 - Swamp           2B11 - Eastern Blue  4CC1 - Green         4D51 - Teal
@@ -115,19 +133,19 @@ class Model():
         # 919F - Violet          AAAF - Salmon        B39F - Lavender      CCCF - Dark Tan
         # D5BF - Light Pink      FFFF - White         F81F - Magenta       07FF - Cyan
         # 841F - Light Gray      420F - Dark Gray
-        '''
-        if(len(new_color) == 4):
+        """
+        if len(new_color) == 4:
             new_color_red_green = int(new_color[:2], 16)
             new_color_blue_alpha = int(new_color[2:], 16)
-        elif(len(new_color) == 6):
+        elif len(new_color) == 6:
             new_color = self._convert_32_to_16(f"{new_color}FF")
             new_color_red_green = int(new_color[:2], 16)
             new_color_blue_alpha = int(new_color[2:], 16)
-        elif(len(new_color) == 8):
+        elif len(new_color) == 8:
             new_color = self._convert_32_to_16(new_color)
             new_color_red_green = int(new_color[:2], 16)
             new_color_blue_alpha = int(new_color[2:], 16)
-        elif(int(new_color, 16) == 0):
+        elif int(new_color, 16) == 0:
             new_color_red_green = 0
             new_color_blue_alpha = 0
         else:
@@ -136,16 +154,21 @@ class Model():
         for item_index in self.model_texture_dict[texture_part]:
             self.mm[item_index] = new_color_red_green
             self.mm[item_index + 1] = new_color_blue_alpha
-    
-    def _convert_32_to_16(self, _32_bit_color):
+
+    def _convert_32_to_16(self, _32_bit_color: str) -> str:
+        """
+        Converts a 32-bit RGBA color to a 16-bit RGB5551 color
+        :param _32_bit_color: 32-bit RGBA color as a hex string
+        :return: 16-bit RGB5551 color as a hex string
+        """
         red = int(_32_bit_color[0:2], 16)
         green = int(_32_bit_color[2:4], 16)
         blue = int(_32_bit_color[4:6], 16)
         alpha = int(_32_bit_color[6:8], 16)
-        
-        r = (red >> 3)
-        g = (green >> 3)
-        b = (blue >> 3)
-        a = (alpha >> 7)
+
+        r = red >> 3
+        g = green >> 3
+        b = blue >> 3
+        a = alpha >> 7
         _16_bit_color = (r << 11) | (g << 6) | (b << 1) | (a)
         return leading_zeros(_16_bit_color, 4)

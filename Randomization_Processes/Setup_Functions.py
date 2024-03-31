@@ -1,4 +1,4 @@
-'''
+"""
 Created on Aug 24, 2021
 
 @author: Cyrus
@@ -21,7 +21,7 @@ Created on Aug 24, 2021
                                #               #
                                #################
 
-'''
+"""
 
 ######################
 ### PYTHON IMPORTS ###
@@ -29,40 +29,40 @@ Created on Aug 24, 2021
 
 import os
 import shutil
+from pathlib import Path
 from random import randint
+
+from .pathhelper import BkRandoPaths
 
 #################
 ### FUNCTIONS ###
 #################
 
-def setup_tmp_folder(file_dir):
-    """Creates temporary folder that'll be used to store bin files and the randomized ROM."""
-    rando_rom_folder = f"{file_dir}Randomized_ROM\\"
-    if(not os.path.isdir(rando_rom_folder)):
-        os.mkdir(rando_rom_folder)
-    else:
-        for filename in os.listdir(rando_rom_folder):
-            file_path = os.path.join(rando_rom_folder, filename)
-            try:
-                if(os.path.isfile(file_path) or os.path.islink(file_path)):
-                    os.unlink(file_path)
-                elif(os.path.isdir(file_path)):
-                    shutil.rmtree(file_path)
-            except Exception:# as e:
-                #logger.error('Failed to delete %s. Reason: %s' % (file_path, e))
-                pass
 
-def set_seed(seed_val=None):
-    """If seed was not provided, generates a seed value."""
-    if((seed_val == None) or (seed_val == "")):
+def setup_tmp_folder(file_dir: str | Path) -> None:
+    """
+    Creates temporary folder that'll be used to store bin files and the randomized ROM.
+    """
+    bk_paths = BkRandoPaths(Path(file_dir))
+    bk_paths.randomized_rom_dir.mkdir(exist_ok=True)
+
+    # Delete any existing files from randomized_rom_dir. Not recursive.
+    for path in bk_paths.randomized_rom_dir.iterdir():
+        path.unlink()
+
+
+def set_seed(seed_val: int | None = None) -> int:
+    """
+    If seed was not provided, generates a seed value.
+    """
+    if not seed_val:
         seed_val = randint(10000000, 19940303)
     return int(seed_val)
 
-def make_copy_of_rom(seed_val, file_dir, original_rom):
-    """Creates a copy of the rom that will be used for randomization"""
-    randomized_rom_file = f"{file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{str(seed_val)}.z64"
-    shutil.copyfile(original_rom, randomized_rom_file)
-    return randomized_rom_file
 
-if __name__ == '__main__':
-    pass
+def make_copy_of_rom(paths: BkRandoPaths, original_rom: str | Path) -> Path:
+    """
+    Creates a copy of the rom that will be used for randomization
+    """
+    shutil.copyfile(original_rom, paths.rom_path)
+    return paths.rom_path

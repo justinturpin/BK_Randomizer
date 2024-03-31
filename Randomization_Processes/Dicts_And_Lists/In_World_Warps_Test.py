@@ -1,6 +1,6 @@
-'''
+"""
 @author: Wizzard
-'''
+"""
 
 from warp import Warp
 
@@ -52,15 +52,12 @@ Levels = {
     #  4 - Alcove Under Arch
     #  5 - Top Of Mountain/Bottom Of Lighthouse
     #  6 - Top Of Lighthouse
-    "Treasure Trove Cove": {
-    },
-    "Clanker's Cavern": {
-    },
+    "Treasure Trove Cove": {},
+    "Clanker's Cavern": {},
     # 0 - Main Area
     # 1 - Mumbo's Skull
     # 2 - Tiptup Choir
-    "Bubblegloop Swamp": {
-    },
+    "Bubblegloop Swamp": {},
     # 0 - Main Area
     # 1 - Mumbo's Skull
     # 2 - Boggy's Igloo
@@ -68,7 +65,15 @@ Levels = {
     # 4 - Wozza's Cave
     "Freezeezy Peak": {
         # Coming outside from Mumbo's Skull
-        Warp(debugName="Skull (Outside)", objectId=0x43, warpsTo=0, warpsFrom=1, flagsNeededToExit=0, flagsNeededToEnter=0, flagsForLearnedAbilities=Warp.Walrus): [
+        Warp(
+            debugName="Skull (Outside)",
+            objectId=0x43,
+            warpsTo=0,
+            warpsFrom=1,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+            flagsForLearnedAbilities=Warp.Walrus,
+        ): [
             "0000005103A94B060043000000000064",
         ],
         # Coming inside to Mumbo's Skull
@@ -116,70 +121,146 @@ Levels = {
     # 5 - King Sandybutt Maze
     "Gobi's Valley": {
         # Jinxy To Main
-        Warp(debugName="Jinxy (To Main)", objectId=0x06, warpsTo=0, warpsFrom=1, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Jinxy (To Main)",
+            objectId=0x06,
+            warpsTo=0,
+            warpsFrom=1,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "0B73004EFFCF50060006000000000000",
         ],
         # Main To Jinxy
-        Warp(debugName="Jinxy (From Main)", objectId=0x05, warpsTo=1, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Jinxy (From Main)",
+            objectId=0x05,
+            warpsTo=1,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "F06D05D317103E860005000000000000",
         ],
         # Rupee To Main
-        Warp(debugName="Rupee (To Main)", objectId=0x64, warpsTo=0, warpsFrom=2, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Rupee (To Main)",
+            objectId=0x64,
+            warpsTo=0,
+            warpsFrom=2,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "000F00A306417D860064000000000064",
         ],
         # Main To Rupee
-        Warp(debugName="Rupee (From Main)", objectId=0x60, warpsTo=2, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Rupee (From Main)",
+            objectId=0x60,
+            warpsTo=2,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "F09E0B4C02A443860060000000000000",
         ],
         # Matching Puzzle To Main
-        Warp(debugName="Matching Puzzle (To Main)", objectId=0x61, warpsTo=0, warpsFrom=3, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Matching Puzzle (To Main)",
+            objectId=0x61,
+            warpsTo=0,
+            warpsFrom=3,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "FA91015000236406006100002B000064",
         ],
         # Main To Matching Puzzle
-        Warp(debugName="Matching Puzzle (From Main)", objectId=0x5C, warpsTo=3, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Matching Puzzle (From Main)",
+            objectId=0x5C,
+            warpsTo=3,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "0F3F09DF01432A86005C000000000000",
         ],
         # Water Pyramid Bottom To Main
-        Warp(debugName="Water Pyramid Bottom (To Main)", objectId=0x63, warpsTo=0, warpsFrom=4, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Water Pyramid Bottom (To Main)",
+            objectId=0x63,
+            warpsTo=0,
+            warpsFrom=4,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "0006011406D48D060063000000000000",
         ],
         # Main To Water Pyramid Bottom
-        Warp(debugName="Water Pyramid Bottom (From Main)", objectId=0x5F, warpsTo=4, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Water Pyramid Bottom (From Main)",
+            objectId=0x5F,
+            warpsTo=4,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "FF1C0BCBF20D6406005F000000029226",
         ],
         # Main To Water Pyramid Top
-        Warp(debugName="Water Pyramid Top (From Main)", objectId=0x5E, warpsTo=4, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="Water Pyramid Top (From Main)",
+            objectId=0x5E,
+            warpsTo=4,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "000610A2EED56386005E000000000000",
         ],
         # Main To King Sandybutt Start
-        Warp(debugName="King Sandybutt Start (From Main)", objectId=0x5D, warpsTo=5, warpsFrom=0, flagsNeededToExit=0, flagsNeededToEnter=Warp.NeedsEggs): [
+        Warp(
+            debugName="King Sandybutt Start (From Main)",
+            objectId=0x5D,
+            warpsTo=5,
+            warpsFrom=0,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=Warp.NeedsEggs,
+        ): [
             "00460A0A028D5186005D00000000FF49",
         ],
         # King Sandybutt Start To Main
-        Warp(debugName="King Sandybutt Start (To Main)", objectId=0x62, warpsTo=0, warpsFrom=5, flagsNeededToExit=0, flagsNeededToEnter=0): [
+        Warp(
+            debugName="King Sandybutt Start (To Main)",
+            objectId=0x62,
+            warpsTo=0,
+            warpsFrom=5,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
             "1825008C015E63860062000000000064",
         ],
         # King Sandybutt End To Main
-        Warp(debugName="King Sandybutt End (From Main)", objectId=0xDE, warpsTo=0, warpsFrom=5, flagsNeededToExit=0, flagsNeededToEnter=0): [
-                "EA94006B046C460600DE000000000064",
-                "EACB006B0486460600DE000000000000",
-                "EB0B006B04A4460600DE000000000000",
+        Warp(
+            debugName="King Sandybutt End (From Main)",
+            objectId=0xDE,
+            warpsTo=0,
+            warpsFrom=5,
+            flagsNeededToExit=0,
+            flagsNeededToEnter=0,
+        ): [
+            "EA94006B046C460600DE000000000064",
+            "EACB006B0486460600DE000000000000",
+            "EB0B006B04A4460600DE000000000000",
         ],
     },
-    "Mad Monster Mansion": {
-    },
-    "Rusty Bucket Bay": {
-    },
-    "Click Clock Wood - Lobby": {
-    },
-    "Click Clock Wood - Spring": {
-    },
-    "Click Clock Wood - Summer": {
-    },
-    "Click Clock Wood - Fall": {
-    },
-    "Click Clock Wood - Winter": {
-    },
-    "Click Clock Wood": {
-    },
+    "Mad Monster Mansion": {},
+    "Rusty Bucket Bay": {},
+    "Click Clock Wood - Lobby": {},
+    "Click Clock Wood - Spring": {},
+    "Click Clock Wood - Summer": {},
+    "Click Clock Wood - Fall": {},
+    "Click Clock Wood - Winter": {},
+    "Click Clock Wood": {},
 }
