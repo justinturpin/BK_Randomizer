@@ -39,7 +39,7 @@ class Music_Manipulation_Class():
         self._music_var = music_var
         self._music_dict = music_dict
         self._sound_pointer_dict = {}
-    
+
     def _grab_compressed_file(self):
         '''Uses the pointer to find the beginning and end of a music file and extracts it'''
         for pointer in range(self._pointers_start, self._pointers_end + 0x08, 0x08):
@@ -51,12 +51,12 @@ class Music_Manipulation_Class():
                     if(len(hex_string) < 2):
                         hex_string = "0" + hex_string
                     comp_file.write(bytes.fromhex(hex_string))
-    
+
     def _place_compressed_files(self):
         '''Replaces the music pointers with the new music file'''
         for pointer in range(self._pointers_start, self._pointers_end + 0x08, 0x08):
 #             print("~~~~")
-            pointer_str = str(hex(pointer))
+            pointer_str = str(hex(pointer)).upper()
             pointer_dec = int(pointer_str[2:], 16)
             if(pointer_str in self._music_address_dict):
                 curr_pointer_file = self._music_address_dict[pointer_str]
@@ -90,20 +90,20 @@ class Music_Manipulation_Class():
            (mm_rand_rom[self._pointers_end + 11] != 0xE8)):
             print("Last Pointer Doesn't Match")
             raise SystemError
-    
+
     def _shuffle_list(self, original_list):
         '''Shuffles a given list'''
         seed(a=self._seed_val)
         shuffle(original_list)
         return original_list
-    
+
     def _generate_cheat_sheet(self):
         cheat_sheet_dict = {}
         for sound_pointer in self._music_address_dict:
             cheat_sheet_dict[self._sound_pointer_dict[f"0x{sound_pointer[2:].upper()}"]] = self._sound_pointer_dict[f"0x{self._music_address_dict[sound_pointer].split('-')[0]}"]
-        with open(f"{self._file_dir}Randomized_ROM/MUSIC_CHEAT_SHEET_{self._seed_val}.json", "w+") as json_file: 
+        with open(f"{self._file_dir}Randomized_ROM/MUSIC_CHEAT_SHEET_{self._seed_val}.json", "w+") as json_file:
             json.dump(cheat_sheet_dict, json_file, indent=4)
-    
+
     def _music_manip_main(self):
         '''Runs through the functions of extracting, shuffling, and reinserting the music files'''
         # Grab All Files

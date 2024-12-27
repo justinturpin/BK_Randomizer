@@ -81,36 +81,36 @@ class World_Manipulation_Class():
         self.extra_flagged_object_flags = deepcopy(extra_flagged_object_flags)
         self.extra_flagged_object_flags_adjusted = deepcopy(extra_flagged_object_flags_adjusted)
         self.replace_camera_dict = deepcopy(World_Order_Warps.replace_camera_dict)
-    
+
     def _shuffle_list(self, original_list, address=0, increment=0):
         '''Shuffles list based on the current address, if applicable'''
         seed(a=(self.seed + address + increment))
         shuffle(original_list)
-    
+
     def _choose_from_list(self, original_list, address=0, increment=0):
         '''Selects an option from a list based on the current address and the number of increments, if applicable'''
         seed(a=(self.seed + address + increment))
         random_choice = choice(original_list)
         return random_choice
-    
+
     def _choose_random_integer(self, int_start=0, int_end=1, address=0, increment=0):
         '''Selects a random integer between the two given values based on the seed, address, and number of increments, when applicable'''
         seed(a=(self.seed + address + increment))
         random_int = randint(int_start, int_end)
         return random_int
-    
+
     def _choose_random_triangular(self, int_start=0, int_end=1, mode=0.5, address=0, increment=0):
         '''Selects a random integer between the two given values based on the seed, address, and number of increments, when applicable'''
         seed(a=(self.seed + address + increment))
         random_float = triangular(int_start, int_end, mode)
         return random_float
-    
+
     def _choose_random_uniform(self, int_start=0, int_end=1, address=0, increment=0):
         '''Selects a random integer between the two given values based on the seed, address, and number of increments, when applicable'''
         seed(a=(self.seed + address + increment))
         random_float = uniform(int_start, int_end)
         return random_float
-    
+
     def _create_worlds(self):
         '''Creates every world using the generic world and generic setup file classes, including individual seasons for click clock wood, if applicable'''
         # MUMBOS MOUNTAIN
@@ -300,7 +300,7 @@ class World_Manipulation_Class():
         self.spiral_mountain._add_setup_file(SetupFile("9780", self.grandmaster.cwd, "SM Main Area"))
         self.spiral_mountain._add_setup_file(SetupFile("9BD8", self.grandmaster.cwd, "Banjo's House"))
         self.world_list.append(self.spiral_mountain)
-    
+
     ###############
     ### STRUCTS ###
     ###############
@@ -313,7 +313,7 @@ class World_Manipulation_Class():
             if((world_object._world_name == "Mumbo's Mountain") and (self.grandmaster.flowers_var.get())):
                 for item_search_string in Structs.abnormal_collectable_struct_id_list:
                     setup_file._locate_item_index(item_search_string, "Struct")
-    
+
     def _shuffle_structs_within_world(self, world_object):
         '''Shuffles the structs found within the world'''
         self.grandmaster.logger.debug("Shuffle Structs Within World")
@@ -321,7 +321,7 @@ class World_Manipulation_Class():
             for struct_info_list in setup_file.struct_info_list:
                 self.struct_info_list.append(struct_info_list)
         self._shuffle_list(self.struct_info_list)
-    
+
     def _shuffle_structs_within_game(self):
         '''Shuffles the structs found within the world'''
         self.grandmaster.logger.debug("Shuffle Structs Within Game")
@@ -371,7 +371,7 @@ class World_Manipulation_Class():
                 self._shuffle_list(world_info_list, increment=world_count)
                 for struct_info in world_info_list:
                     self.struct_info_list.append(struct_info)
-    
+
     def _randomize_structs(self):
         '''Randomizes the value of each struct found'''
         self.grandmaster.logger.debug("Randomize Structs Within Worlds")
@@ -453,7 +453,7 @@ class World_Manipulation_Class():
                 self._shuffle_list(world_info_list, increment=world_count)
                 for struct_info in world_info_list:
                     self.struct_info_list.append(struct_info)
-    
+
     def _oh_whoops_all_notes(self):
         '''Turns all found structs into notes'''
         self.grandmaster.logger.debug("Converting Structs To Notes")
@@ -469,7 +469,7 @@ class World_Manipulation_Class():
             "Size": 0x0,
             }
         self.struct_info_list = [note_info] * struct_count
-    
+
     def _move_structs_within_world(self, world_object):
         '''Places the randomized struct list back into the world'''
         self.grandmaster.logger.debug("Move Structs Within World")
@@ -481,7 +481,7 @@ class World_Manipulation_Class():
                 if((self.struct_info_list[list_index_start + list_index]["Obj_ID1"] == 0x16) and (self.struct_info_list[list_index_start + list_index]["Obj_ID2"] == 0x40)):
                     setup_file.note_count += 1
             list_index_start += len(setup_file.struct_index_list)
-    
+
     def _move_structs_within_game(self):
         '''Places the randomized struct list back into the world'''
         self.grandmaster.logger.debug("Move Structs Within Game")
@@ -527,11 +527,11 @@ class World_Manipulation_Class():
             self._move_structs_within_game()
             self.struct_info_list = []
             self._lair_refills_main()
-    
+
     ###########################
     ### NON FLAGGED OBJECTS ###
     ###########################
-    
+
     def _gather_non_flag_objects(self, world_object):
         '''Collects the non-flagged objects per setup for the world'''
         self.grandmaster.logger.debug("Gather Non-Flag Objects")
@@ -541,7 +541,7 @@ class World_Manipulation_Class():
             if(self.grandmaster.non_flagged_object_abnormalities_var.get() == 1):
                 for item_search_string in Non_Flagged_Objects.abnormal_obj_no_flag_id_dict:
                     setup_file._locate_item_index(item_search_string, "No_Flagged_Object")
-    
+
     def _gather_specific_non_flagged_objects(self, world_object, dictionary):
         '''Collects the non-flagged objects listed in the given dictionary (Used for Lit Pots)'''
         self.grandmaster.logger.debug("Gather Specific Non-Flag Objects")
@@ -550,7 +550,7 @@ class World_Manipulation_Class():
             setup_file.non_flag_object_info_list = []
             for item_search_string in dictionary:
                 setup_file._locate_item_index(item_search_string, "No_Flagged_Object")
-    
+
     def _shuffle_non_flag_objects_within_world(self, world_object):
         '''Shuffles the non-flagged objects found within the world'''
         self.grandmaster.logger.debug("Shuffle Non-Flag Objects Within World")
@@ -558,7 +558,7 @@ class World_Manipulation_Class():
             for non_flag_object_info_list in setup_file.non_flag_object_info_list:
                 self.non_flag_object_info_list.append(non_flag_object_info_list)
         self._shuffle_list(self.non_flag_object_info_list, setup_file.setup_address)
-    
+
     def _avoid_main_area_shuffle(self, world_object, main_area_count=0):
         '''It shuffles a particular item from the main area into subareas (Used for Lit Pots)'''
         self.grandmaster.logger.debug("Avoid Main Area Shuffle")
@@ -569,7 +569,7 @@ class World_Manipulation_Class():
         from_non_main_area = self.non_flag_object_info_list[-main_area_count:]
         self._shuffle_list(includes_main_area, setup_file.setup_address)
         self.non_flag_object_info_list = from_non_main_area + includes_main_area
-    
+
     def _move_non_flag_objects_within_world(self, world_object):
         '''Places the randomized non-flagged objects list back into the world'''
         self.grandmaster.logger.debug("Move Non-Flag Objects Within World")
@@ -591,7 +591,7 @@ class World_Manipulation_Class():
                 else:
                     setup_file.non_flagged_obj_dict[object_name] += 1
             list_index_start += len(setup_file.non_flag_object_index_list)
-    
+
     def _move_specific_non_flag_objects_within_world(self, world_object, dictionary):
         '''Places the randomized non-flagged objects list back into the world'''
         self.grandmaster.logger.debug("Move Specific Non-Flag Objects Within World")
@@ -629,7 +629,7 @@ class World_Manipulation_Class():
     ###############
     ### ENEMIES ###
     ###############
-    
+
     def _adjust_enemy_dicts(self):
         '''Filters the enemy dicts based on the selected enemies'''
         self.grandmaster.logger.debug("Adjust Enemy Dicts")
@@ -639,7 +639,7 @@ class World_Manipulation_Class():
                 for enemy_id in Enemies.master_enemy_dict[enemy]:
                     enemy_filter_list.append(enemy_id)
         return enemy_filter_list
-    
+
     def _skip_enemies(self, item_search_string, enemy_option, world_name=None, setup_name=None):
         '''Does not randomize enemies that provide Jiggies or cause issues'''
         # Sir Slush
@@ -657,7 +657,7 @@ class World_Manipulation_Class():
         elif(setup_name == "Nipper's Shell"):
             return False
         return True
-    
+
     def _gather_enemies(self, world_object, enemy_option):
         '''Collects the enemies per setup for the world'''
         self.grandmaster.logger.debug("Gather Enemies")
@@ -692,7 +692,7 @@ class World_Manipulation_Class():
                 for item_search_string in Enemies.enemy_id_dict[world_object._world_name]["Flying"]:
                     if(self._skip_enemies(item_search_string, enemy_option, world_object._world_name)):
                         setup_file._locate_item_index(item_search_string, "Flying_Enemy")
-    
+
     def _gather_all_enemies(self, world_object):
         '''Collects the enemies per setup for the world'''
         self.grandmaster.logger.debug("Gather Enemies")
@@ -739,7 +739,7 @@ class World_Manipulation_Class():
         self._shuffle_list(self.ground_enemy_info_list)
         self._shuffle_list(self.wall_enemy_info_list)
         self._shuffle_list(self.flying_enemy_info_list)
-    
+
     def _randomize_enemies(self, world_object, enemy_filter_list):
         '''Randomizes the value of each enemies found'''
         self.grandmaster.logger.debug("Randomize Enemies")
@@ -802,7 +802,7 @@ class World_Manipulation_Class():
                     "Obj_ID2": int(new_enemy[6:], 16),
                     }
                 self.flying_enemy_info_list.append(new_enemy_info)
-        
+
     def _move_enemies_within_world(self, world_object):
         '''Places the randomized enemies list back into the world'''
         self.grandmaster.logger.debug("Move Enemies Within World")
@@ -931,11 +931,11 @@ class World_Manipulation_Class():
                 4: 0xFB, 5: 0xC8,
                 }
             self.rusty_bucket_bay._setup_list[0]._edit_object("079EFECAFBB2190C01CC", replacement_dict)
-    
+
     #######################
     ### FLAGGED OBJECTS ###
     #######################
-    
+
     def _gather_flagged_objects(self, world_object):
         '''Collects the flagged objects per setup for the world'''
         self.grandmaster.logger.debug("Gather Flag Objects")
@@ -954,7 +954,7 @@ class World_Manipulation_Class():
                     object_search_string = Flagged_Objects.softlock_flagged_object_dict[world_object._world_name][item_id]["Object"]
                     flag_search_string = Flagged_Objects.softlock_flagged_object_dict[world_object._world_name][item_id]["Flag"]
                     setup_file._locate_flagged_object_index(object_search_string, flag_search_string)
-    
+
     def _shuffle_flagged_objects_within_world(self, world_object):
         '''Shuffles the flagged objects found within the world'''
         self.grandmaster.logger.debug("Shuffle Flag Objects Within World")
@@ -974,7 +974,7 @@ class World_Manipulation_Class():
                 increment += 1
         else:
             self._shuffle_list(self.flagged_object_info_list)
-    
+
     def _shuffle_flagged_objects_within_game(self):
         '''Shuffles the flagged objects found within the game'''
         self.grandmaster.logger.debug("Shuffle Flag Objects Within Game")
@@ -1008,7 +1008,7 @@ class World_Manipulation_Class():
                 increment += 1
         else:
             self._shuffle_list(self.flagged_object_info_list)
-    
+
     def _move_flagged_objects_within_world(self, world_object):
         '''Places the randomized flagged objects list back into the world'''
         self.grandmaster.logger.debug("Move Flag Objects Within World")
@@ -1043,7 +1043,7 @@ class World_Manipulation_Class():
                     else:
                         setup_file.flagged_obj_dict[object_name] += 1
             list_index_start += len(setup_file.flagged_object_index_list)
-    
+
     def _move_flagged_objects_within_game(self):
         '''Places the randomized flagged objects list back into the world'''
         self.grandmaster.logger.debug("Move Flag Objects Within Game")
@@ -1077,7 +1077,7 @@ class World_Manipulation_Class():
                         else:
                             setup_file.flagged_obj_dict[object_name] += 1
                 list_index_start += len(setup_file.flagged_object_index_list)
-    
+
     def _remove_floating_jiggies(self):
         '''Removes all non-spawn Jiggies'''
         replacement_dict = {
@@ -1087,7 +1087,7 @@ class World_Manipulation_Class():
         for world_object in self.world_list:
             for setup_file in world_object._setup_list:
                 setup_file._replace_all_in_area("190C0046", replacement_dict)
-    
+
     def _flagged_objects_main(self):
         '''Runs the flagged objects options that are not NONE'''
         self.grandmaster.logger.info("Flagged Objects Main")
@@ -1105,11 +1105,11 @@ class World_Manipulation_Class():
             self.flagged_object_info_list = []
         if(self.grandmaster.remove_floating_jiggies_var.get() == 1):
             self._remove_floating_jiggies()
-    
+
     ###############
     ### REFILLS ###
     ###############
-    
+
     def _lair_refills_main(self):
         '''Replaces normally 1-up locations with the egg and feather refills for the struct option ALL NOTES'''
         self.grandmaster.logger.debug("Lair Refills Main")
@@ -1137,20 +1137,20 @@ class World_Manipulation_Class():
         self.gruntildas_lair._setup_list[13]._edit_object("DE0FF90BF388", egg_replace_dict)
         # MMM & RBB Puzzles
         self.gruntildas_lair._setup_list[16]._edit_object("FCBA079E0343", gold_feather_replace_dict)
-    
+
     ##################
     ### NOTE DOORS ###
     ##################
-    
+
     ### FINAL NOTE DOOR ###
-    
+
     def _remove_note_doors(self, note_door_list=Sequences.note_door):
         '''Removes the note doors for the setting FINAL NOTE DOOR'''
         self.grandmaster.logger.debug("Remove Note Doors")
         for setup_file in self.gruntildas_lair._setup_list:
             for item_search_string in note_door_list:
                 setup_file._locate_item_index(item_search_string, "Note_Door")
-    
+
     def _810_bottles_cutscene(self):
         self.grandmaster.logger.debug("810 Bottles Cutscene")
         '''Places Bottles at the 810 Note Door because note doors don't open unless you see that cutscene'''
@@ -1209,9 +1209,9 @@ class World_Manipulation_Class():
         if(world_object._world_name in ["Mumbo's Mountain", "Bubblegloop Swamp"]):
             note_count += 5
         return note_count
-    
+
     ### SCALING NOTE DOOR ###
-    
+
     def _scale_note_doors(self, final_note_door_value):
         '''Scales the note doors based on world order and how many notes are in each world'''
         self.grandmaster.logger.debug("Scale Note Doors")
@@ -1233,7 +1233,7 @@ class World_Manipulation_Class():
         for scaling in note_door_scaling:
             note_door_list.append(round(scaling * final_note_door_value))
         return note_door_list
-    
+
     def _set_note_door_values(self, note_door_list):
         '''Sets the requirements of every note door to zero except for the note door proceeding the final battle'''
         self.grandmaster.logger.debug("Set Note Door Values")
@@ -1292,7 +1292,7 @@ class World_Manipulation_Class():
                     if(ones == 9):
                         note_door_texture_obj._flip_texture(note_door_indices[note_index][1]["Door_Vertices"], x_axis=True, y_axis=True)
         self._remove_note_doors(note_door_list=Sequences.note_door[-4:])
-    
+
     def _note_doors_main(self, final_note_door_value):
         '''Either scales or removes Note Doors'''
         self.grandmaster.logger.info("Note Doors Main")
@@ -1305,20 +1305,20 @@ class World_Manipulation_Class():
         else:
             note_door_list = [50, 180, 260, 350, 450, 640, 765, 810, 828, 846, 864, 882]
         self._set_note_door_values(note_door_list)
-    
+
     ####################
     ### WORLD PUZZLE ###
-    #################### 
-    
+    ####################
+
     ### FINAL WORLD PUZZLE ###
-    
+
     def _final_world_puzzle(self, final_puzzle_value):
         '''Sets the requirements of every puzzle to zero except for the puzzle proceeding the final battle'''
         self.grandmaster.logger.info("Final World Puzzle")
         # Find location of world puzzles
         # 00 00 01 01 00 5D 02 02 00 5E 05 03 00 60 07 03 00 63 08 04 00 66 09 04 00 6A 0A 04 00 6E 0C 04 00 72 0F 04 00 76 19 05 00 7A 04 03
         # Every 4 is a note door, with the third value being the one you have to change
-        with open(f"{self._file_dir}Randomized_ROM\\FCF698-Decompressed.bin", "r+b") as decomp_file:
+        with open(f"{self._file_dir}Randomized_ROM/FCF698-Decompressed.bin", "r+b") as decomp_file:
             mm_decomp = mmap.mmap(decomp_file.fileno(), 0)
             #                                                      0 1 2 3 4 5 6 7 8 910111213141516171819202122232425262728293031323334353637383940414243
             note_door_index_start = mm_decomp.find(bytes.fromhex("00000101005D0202005E0503006007030063080400660904006A0A04006E0C0400720F0400761905007A0403"))
@@ -1332,11 +1332,11 @@ class World_Manipulation_Class():
             if(honeycomb_puzzle_count > 4):
                 honeycomb_puzzle_count = 4
             mm_decomp[note_door_index_start + 42] = honeycomb_puzzle_count
-    
+
     ######################
     ### MAGIC BARRIERS ###
     ######################
-    
+
     def _magic_barrier_main(self):
         '''Removes the note doors for the setting FINAL NOTE DOOR'''
         self.grandmaster.logger.info("Magic Barrier Main")
@@ -1352,25 +1352,25 @@ class World_Manipulation_Class():
             for setup_file in self.click_clock_wood._setup_list:
                 for item_search_string in Non_Flagged_Objects.magic_barriers:
                     setup_file._locate_item_index(item_search_string, "Magic_Barrier")
-    
+
     #################
     ### SEQUENCE ###
     #################
-    
+
     def _gather_sequence(self, sequence_list, sequence_type=None):
         '''Collects a sequence list per setup for the world'''
         self.curr_setup_file.sequence_index_list = []
         self.curr_setup_file.sequence_info_list = []
         for item_search_string in sequence_list:
             self.curr_setup_file._locate_sequence_index(item_search_string, sequence_type)
-    
+
     def _shuffle_sequences_within_area(self):
         '''Shuffles the sequences found within the world'''
         self.sequence_info_list = []
         for sequence_info_list in self.curr_setup_file.sequence_info_list:
             self.sequence_info_list.append(sequence_info_list)
         self._shuffle_list(self.sequence_info_list)
-    
+
     def _move_sequences(self):
         '''Places the randomized sequences list back into the world'''
         for list_index in range(len(self.curr_setup_file.sequence_index_list)):
@@ -1390,14 +1390,14 @@ class World_Manipulation_Class():
             object_search_string = object_dict[item_id]["Object"]
             camera_search_string = object_dict[item_id]["Camera"]
             self.curr_setup_file._locate_camera_sequence_index(object_search_string, camera_search_string)
-    
+
     def _shuffle_camera_sequences_within_area(self):
         '''Shuffles the sequences with cameras found within the world'''
         self.sequence_info_list = []
         for sequence_info_list in self.curr_setup_file.sequence_info_list:
             self.sequence_info_list.append(sequence_info_list)
         self._shuffle_list(self.sequence_info_list)
-    
+
     def _move_camera_sequences(self):
         '''Places the randomized sequences with cameras list back into the world'''
         for list_index in range(len(self.curr_setup_file.sequence_index_list)):
@@ -1406,18 +1406,18 @@ class World_Manipulation_Class():
             obj_info = self.sequence_info_list[list_index][0]
             camera_info = self.sequence_info_list[list_index][1]
             self.curr_setup_file._set_camera_sequence(obj_index, obj_info, camera_index, camera_info)
-    
+
     #######################
     ### SEQUENCE TUPLES ###
     #######################
-    
+
     def _gather_sequence_tuple(self, sequence_list):
         '''Collects a sequence pair list per setup for the world'''
         self.curr_setup_file.sequence_index_list = []
         self.curr_setup_file.sequence_info_list = []
         for item_search_tuple in sequence_list:
             self.curr_setup_file._locate_sequence_tuple_index(item_search_tuple)
-    
+
     def _center_x_z(self, sequence_list_index):
         '''Calculates the center x and center z coordinate of two objects'''
         # X
@@ -1443,7 +1443,7 @@ class World_Manipulation_Class():
         center_hex_z1 = int(center_hex_z[:2], 16)
         center_hex_z2 = int(center_hex_z[2:], 16)
         return (center_x, flag1_x, flag2_x, center_hex_x1, center_hex_x2, center_z, flag1_z, flag2_z, center_hex_z1, center_hex_z2)
-    
+
     def _harder_boggy_race(self):
         '''Makes the Boggy race harder by making the flags move around'''
         self.sequence_info_list = []
@@ -1496,7 +1496,7 @@ class World_Manipulation_Class():
                 self.curr_setup_file.sequence_info_list[sequence_list_index][1]["Y_LOC1"] = int(str_y2[:2], 16)
                 self.curr_setup_file.sequence_info_list[sequence_list_index][1]["Y_LOC2"] = int(str_y2[2:], 16)
             self.sequence_info_list.append((self.curr_setup_file.sequence_info_list[sequence_list_index][0], self.curr_setup_file.sequence_info_list[sequence_list_index][1]))
-    
+
     def _move_sequence_tuple(self):
         '''Places the randomized sequences pairs list back into the world'''
         for list_index in range(len(self.curr_setup_file.sequence_index_list)):
@@ -1505,11 +1505,11 @@ class World_Manipulation_Class():
             item_info1 = self.sequence_info_list[list_index][0]
             item_info2 = self.sequence_info_list[list_index][1]
             self.curr_setup_file._set_sequence_tuple(item_index1, item_info1, item_index2, item_info2)
-            
+
     ######################
     ### SEQUENCE MAINS ###
     ######################
-    
+
     def _shuffle_clanker_rings(self):
         '''Gathers, shuffles, and configures new Clanker ring order'''
         self.grandmaster.logger.info("Shuffle Clanker Rings")
@@ -1525,7 +1525,7 @@ class World_Manipulation_Class():
         self._gather_camera_sequence(Sequences.croctus_dict)
         self._shuffle_camera_sequences_within_area()
         self._move_camera_sequences()
-    
+
     def _boggy_race_flags_main(self):
         '''Gathers, calculates new location, and configures new Clanker ring order'''
         self.grandmaster.logger.info("Hard Boggy Race Main")
@@ -1533,7 +1533,7 @@ class World_Manipulation_Class():
         self._gather_sequence_tuple(Sequences.boggy_race_flags)
         self._harder_boggy_race()
         self._move_sequence_tuple()
-    
+
     def _shuffle_ancient_ones(self):
         '''Gathers, shuffles, and configures new Ancient Ones order'''
         self.grandmaster.logger.info("Shuffle Ancient Ones")
@@ -1541,7 +1541,7 @@ class World_Manipulation_Class():
         self._gather_camera_sequence(Sequences.ancient_ones_dict)
         self._shuffle_camera_sequences_within_area()
         self._move_camera_sequences()
-    
+
     def _shuffle_jinxy_heads(self):
         '''Gathers, shuffles, and configures new King Sandybutt Jinxy Heads order'''
         self.grandmaster.logger.info("Shuffle Jinxy Heads")
@@ -1549,11 +1549,11 @@ class World_Manipulation_Class():
         self._gather_camera_sequence(Sequences.jinxy_head_dict)
         self._shuffle_camera_sequences_within_area()
         self._move_camera_sequences()
-    
+
     #########################
     ### WORLD ORDER WARPS ###
     #########################
-    
+
     ### COMMON WORLD ORDER FUNCTIONS ###
     def _gather_all_world_warps(self):
         '''Locates the index and info of all world warps'''
@@ -1565,7 +1565,7 @@ class World_Manipulation_Class():
             for warp in World_Order_Warps.world_order_warps_dict[str(world_order_count)]:
                 (self.gruntildas_lair._setup_list[setup_num])._locate_item_index(warp, "Warp")
             world_order_count += 1
-    
+
     def _move_world_order(self, shuffle_type="Simple"):
         '''Sets the world order'''
         world_order_nums = {
@@ -1591,7 +1591,7 @@ class World_Manipulation_Class():
             for warp_index in self.curr_setup_file.warp_index_list:
                 self.curr_setup_file._edit_object_index(warp_index, edit_dict)
             curr_world_num += 1
-    
+
     def _gather_all_bottles_mounds(self):
         '''Gathers the bottles mound info and index'''
         for world_object in self.world_list:
@@ -1600,7 +1600,7 @@ class World_Manipulation_Class():
                 setup_file.bottles_info_list = []
                 for bottles_mound in World_Order_Warps.learnable_moves_dict:
                     setup_file._locate_item_index(World_Order_Warps.learnable_moves_dict[bottles_mound], "Bottles_Mound")
-    
+
     def _new_move_camera(self, setup_file, new_move):
         '''Adjusts cameras in an area with a potential new move'''
         primary_camera = World_Order_Warps.bottles_moves_camera_dict[new_move]["Primary_Camera"]
@@ -1629,7 +1629,7 @@ class World_Manipulation_Class():
             setup_file._replace_all_in_area(f"1200{camera_id}0000000000", replacement_dict)
             setup_file._replace_all_in_area(f"9200{camera_id}0000000000", replacement_dict)
             self.replace_camera_dict[setup_file.setup_name].pop(0)
-    
+
     def _add_clankers_cavern_jump_pad(self):
         '''Adds a Shock Jump Pad to the inside of Clanker in order to make the logic easier and help prevent backtracking'''
         edit_dict ={
@@ -1645,7 +1645,7 @@ class World_Manipulation_Class():
             9: 11,
             }
         (self.clankers_cavern._setup_list[1])._edit_object("FF1F07EDF8FD190C0354", edit_dict)
-    
+
     def _world_entrance_signs(self):
         '''Edits the world entrance signs based on world order'''
         # 0x89B0 - 4306E0
@@ -1666,9 +1666,9 @@ class World_Manipulation_Class():
             new_order_dict[curr_index * 2 + 1] = world_texture_dict[self.world_order.world_order_list[curr_index]] + 1
         texture_obj = Texture_Class(self.grandmaster.cwd, "89B0")
         texture_obj._extract_header_info()
-        texture_obj._extract_texture_setup_info()  
+        texture_obj._extract_texture_setup_info()
         texture_obj._rearrange_textures(new_order_dict)
-    
+
     def _brentilda_world_order_hints(self):
         '''Adjusts Brentilda's hints to give hints for the randomizer'''
         world_object_list = []
@@ -1718,13 +1718,13 @@ class World_Manipulation_Class():
         speech_manip._brentilda_10_1(self.gruntildas_lair)
         speech_manip._brentilda_10_2(self.spiral_mountain)
         speech_manip._brentilda_10_3()
-    
+
     ### BASIC SHUFFLE ###
     def _basic_calculate_new_world_order(self):
         '''Simple world order calculation'''
         self.world_order = World_Order_Basic(self.seed, self.grandmaster.world_exit_var.get(), free_transformations=self.grandmaster.free_transformations_var.get())
         self.world_order._world_order_main()
-    
+
     def _basic_edit_bottles_mound(self):
         '''Edits bottles mounds for basic shuffle'''
         bottles_info_list = []
@@ -1774,18 +1774,18 @@ class World_Manipulation_Class():
                         }
                     setup_file._edit_object_index(bottles_index, replacement_dict)
                     bottles_info_list.remove(chosen_move)
-                    new_move = (leading_zeros(chosen_move['Script1'], 2) + 
-                                leading_zeros(chosen_move['Script2'], 2) + 
-                                leading_zeros(chosen_move['Obj_ID1'], 2) + 
+                    new_move = (leading_zeros(chosen_move['Script1'], 2) +
+                                leading_zeros(chosen_move['Script2'], 2) +
+                                leading_zeros(chosen_move['Obj_ID1'], 2) +
                                 leading_zeros(chosen_move['Obj_ID2'], 2)).upper()
                     self._new_move_camera(setup_file, new_move)
-    
+
     def _basic_world_order_shuffle_main(self):
         '''Runs the basic world order shuffle functions'''
         self._basic_calculate_new_world_order()
         self._move_world_order(shuffle_type="Simple")
         self._basic_edit_bottles_mound()
-    
+
     ### BOTTLES SHUFFLE ###
     def _bottles_to_1_ups(self):
         '''Turns all Bottles mounds to 1-Ups to have them shuffle with non-flagged objects'''
@@ -1797,7 +1797,7 @@ class World_Manipulation_Class():
                         2: 0x0, 3: 0x49,
                         }
                     setup_file._edit_object(World_Order_Warps.learnable_moves_dict[bottles_mound], replacement_dict)
-    
+
     def _determine_available_move_slots(self):
         '''Compares 1-Up locations to allowed potential bottles locations'''
         for world_object in self.world_list[:-2]:
@@ -1813,7 +1813,7 @@ class World_Manipulation_Class():
             for possible_bottles in list(self.modified_bottles_world_warp_dict[current_world_name]["Possible_Bottles"]):
                 if(possible_bottles not in available_bottles):
                     del self.modified_bottles_world_warp_dict[current_world_name]["Possible_Bottles"][possible_bottles]
-    
+
     def _bottles_new_world_order(self):
         '''Determines the new world order that also shuffles bottles around between the worlds'''
         for world_object in self.world_list[:-2]:
@@ -1870,7 +1870,7 @@ class World_Manipulation_Class():
             world_cheat_sheet_str += "\n"
         with open(f"{self.grandmaster.cwd}Randomized_ROM/MOVES_CHEAT_SHEET_{self.seed}.txt", "w+") as world_entrance_cheat_sheet:
             world_entrance_cheat_sheet.write(world_cheat_sheet_str)
-    
+
     def _bottles_set_new_moves(self):
         '''Replaces the 1-Ups with the calculated bottles hill'''
         for world_object in self.world_list[:-2]:
@@ -1890,7 +1890,7 @@ class World_Manipulation_Class():
                             }
                         setup_file._edit_object(replace_1_up, replacement_dict)
                         self._new_move_camera(setup_file, new_move)
-    
+
     def _bottles_world_order_shuffle_main(self):
         '''Runs through the bottles world shuffle functions'''
         self.mumbos_mountain._setup_list[0]._check_for_orange()
@@ -1898,7 +1898,7 @@ class World_Manipulation_Class():
         self._bottles_new_world_order()
         self._move_world_order(shuffle_type="Bottles")
         self._bottles_set_new_moves()
-    
+
     def _remove_learning_move_warps(self):
         '''Removes placement warps for BK when a move is learned in TTC or GV'''
         replacement_dict = {
@@ -1908,7 +1908,7 @@ class World_Manipulation_Class():
         self.treasure_trove_cove._setup_list[0]._edit_object("0A1F05ED0C5C190C0372", replacement_dict)
         self.treasure_trove_cove._setup_list[0]._edit_object("FF1608710456190C0372", replacement_dict)
         self.gobis_valley._setup_list[0]._edit_object("E7C90B0CFCCF190C0372", replacement_dict)
-    
+
     ### WORLD ORDER WARPS MAIN ###
     def _world_order_warps_main(self):
         '''Runs the world order warps options that are not NONE'''
@@ -2030,7 +2030,7 @@ class World_Manipulation_Class():
     ##########################
     ### WITHIN WORLD WARPS ###
     ##########################
-    
+
     def _set_world_warps_by_world(self, world_object, randomized_warp_dict):
         '''Sets the within world warps by world'''
         self.grandmaster.logger.debug("Set World Warps By World")
@@ -2045,7 +2045,7 @@ class World_Manipulation_Class():
                         12: int(new_warp_string[24:26], 16), 13: int(new_warp_string[26:28], 16),
                         })):
                         break
-    
+
     def _within_world_warps_by_world(self):
         '''Shuffles the within world warps within each world'''
         self.grandmaster.logger.debug("Shuffle Warps Within World")
@@ -2054,7 +2054,7 @@ class World_Manipulation_Class():
             within_world_warps_obj._randomize_by_world(world_object._world_name)
             self._set_world_warps_by_world(world_object, within_world_warps_obj._randomized_warp_dict)
         self._generate_within_world_warps_cheat_sheet(within_world_warps_obj._randomized_warp_cheat_sheet_dict)
- 
+
     def _set_world_warps_by_game(self, randomized_warp_dict):
         '''Sets the within world warps by game'''
         self.grandmaster.logger.debug("Sets World Warps By Game")
@@ -2074,7 +2074,7 @@ class World_Manipulation_Class():
                             break
                     if(string_found):
                         break
- 
+
     def _within_world_warps_by_game(self):
         '''Shuffles the within world warps within all 9 worlds'''
         self.grandmaster.logger.debug("Shuffle Within Warps By Game")
@@ -2085,7 +2085,7 @@ class World_Manipulation_Class():
         within_world_warps_obj._randomize_by_game(world_list)
         self._set_world_warps_by_game(within_world_warps_obj._randomized_warp_dict)
         self._generate_within_world_warps_cheat_sheet(within_world_warps_obj._randomized_warp_cheat_sheet_dict)
-    
+
     def _generate_within_world_warps_cheat_sheet(self, randomized_warp_cheat_sheet_dict):
         '''Creates a cheat sheet for within world warps'''
         self.grandmaster.logger.debug("Generate Within World Warps Cheat Sheet")
@@ -2093,9 +2093,9 @@ class World_Manipulation_Class():
         for original_warp in randomized_warp_cheat_sheet_dict:
             cheat_sheet_text += f"{original_warp} -> {randomized_warp_cheat_sheet_dict[original_warp]}\n"
         config_file = f"{self.grandmaster.cwd}Randomized_ROM/WITHIN_WORLD_WARPS_CHEAT_SHEET_{self.seed}.txt"
-        with open(config_file, "w+") as cheat_sheet_file: 
+        with open(config_file, "w+") as cheat_sheet_file:
             cheat_sheet_file.write(cheat_sheet_text)
-    
+
     def _within_world_warps_main(self):
         '''Runs the within world warps options that are not NONE'''
         self.grandmaster.logger.info("Within World Warps Main")
@@ -2103,11 +2103,11 @@ class World_Manipulation_Class():
             self._within_world_warps_by_world()
         elif(self.grandmaster.within_world_warps_var.get() == "Shuffle By Game"):
             self._within_world_warps_by_game()
-    
+
     ###################
     ### CHEAT SHEET ###
     ###################
-    
+
     def _generate_cheat_sheet(self):
         '''Creates a cheat sheet for the notes and flagged objects'''
         self.grandmaster.logger.info("Generate Object/Struct Cheat Sheet")
@@ -2138,15 +2138,15 @@ class World_Manipulation_Class():
             cheat_sheet_dict[world_object._world_name]["World_Note_Count"] = world_note_count
         cheat_sheet_dict["World_Note_Count"] = totals_note_count
         config_file = f"{self.grandmaster.cwd}Randomized_ROM/OBJECT_CHEAT_SHEET_{self.seed}.json"
-        with open(config_file, "w+") as json_file: 
+        with open(config_file, "w+") as json_file:
             json.dump(cheat_sheet_dict, json_file, indent=4)
-    
+
     ###########################
     ### HARDER FINAL BATTLE ###
     ###########################
-    
+
     ### RETURN OF FURNACE FUN ###
-    
+
     def _replace_model_files(self):
         '''Unused #RIP'''
         self.grandmaster.logger.info("Replace Model Files")
@@ -2159,7 +2159,7 @@ class World_Manipulation_Class():
         shutil.copy(furnace_fun_bin, f"{self.grandmaster.cwd}Randomized_ROM/10678-Randomized_Compressed.bin")
         shutil.copy(final_battle_a_bin, f"{self.grandmaster.cwd}Randomized_ROM/105D8-Randomized_Compressed.bin")
         shutil.copy(final_battle_b_bin, f"{self.grandmaster.cwd}Randomized_ROM/10740-Randomized_Compressed.bin")
-    
+
     def _adjust_ff_setup_file(self):
         '''Unused #RIP'''
         self.grandmaster.logger.debug("Adjust Furnace Fun Setup File")
@@ -2180,15 +2180,15 @@ class World_Manipulation_Class():
             {2: 0x00, 3: 0x00}
             ]
         self.gruntildas_lair._setup_list[19]._replace_each_object_parameters(final_battle_list, replacement_dict)
-    
+
     def _return_of_furnace_fun(self):
         '''Unused #RIP'''
         self.grandmaster.logger.info("Return Of Furnace Fun")
         self._replace_model_files()
         self._adjust_ff_setup_file()
-    
+
     ### ENEMIES ###
-    
+
     def _final_battle_sir_slush(self):
         '''Adds Sir Slush to block the Jinjo Statues'''
         self.grandmaster.logger.debug("Final Battle Sir Slush")
@@ -2241,7 +2241,7 @@ class World_Manipulation_Class():
                 },
             ]
         self.curr_setup_file._replace_each_object_parameters(search_string_list, replacement_dict_list)
-    
+
     def _final_battle_whipcrack(self):
         '''Adds Whipcracks to block the Jinjo Statues'''
         self.grandmaster.logger.debug("Final Battle Whipcrack")
@@ -2294,7 +2294,7 @@ class World_Manipulation_Class():
                 },
             ]
         self.curr_setup_file._replace_each_object_parameters(search_string_list, replacement_dict_list)
-    
+
     def _final_battle_ground_enemies(self):
         '''Adds grounded enemies to the final battle'''
         self.grandmaster.logger.debug("Final Battle Ground Enemies")
@@ -2364,7 +2364,7 @@ class World_Manipulation_Class():
             ground_replacement_dict_list.append(self._choose_from_list(ground_replacement_dict_option_list, increment=enemy_num))
         self.curr_setup_file._replace_each_object_parameters(ground_enemy_string_list, ground_replacement_dict_list)
         self.curr_setup_file._replace_each_object_parameters(ground_enemy_string_list, ground_enemy_location_replacement_dict)
-    
+
     def _final_battle_sky_enemies(self):
         '''Adds flying enemies to the final battle'''
         self.grandmaster.logger.debug("Final Battle Sku Enemies")
@@ -2423,9 +2423,9 @@ class World_Manipulation_Class():
             replacement_dict_list.append(self._choose_from_list(sky_replacement_dict_option_list, increment=enemy_num))
         self.curr_setup_file._replace_each_object_parameters(sky_enemy_string_list, replacement_dict_list)
         self.curr_setup_file._replace_each_object_parameters(sky_enemy_string_list, sky_enemy_location_replacement_dict)
-    
+
     ### ENVIRONMENT ###
-    
+
     def _final_battle_floor_is_missing(self):
         '''Removes the collision of the floor of the final battle'''
         self.grandmaster.logger.debug("Floor Is Missing")
@@ -2525,11 +2525,11 @@ class World_Manipulation_Class():
         final_battle_area = Level_Model_Class(self._file_dir, "10678")
         final_battle_area._grab_floors()
         vert_condition = lambda Vert1, Vert2, Vert3: ((final_battle_area._vertex_dict[Vert1]["Y"] < 1) and (final_battle_area._vertex_dict[Vert1]["Y"] > -6) and
-                                                      (final_battle_area._vertex_dict[Vert2]["Y"] < 1) and (final_battle_area._vertex_dict[Vert2]["Y"] > -6) and 
+                                                      (final_battle_area._vertex_dict[Vert2]["Y"] < 1) and (final_battle_area._vertex_dict[Vert2]["Y"] > -6) and
                                                       (final_battle_area._vertex_dict[Vert3]["Y"] < 1) and (final_battle_area._vertex_dict[Vert3]["Y"] > -6))
         new_bytes = [0x0, 0x28, 0xFD, 0x79, 0xFD, 0x12]
         final_battle_area._change_floor_type_by_vert(vert_condition, new_bytes)
-    
+
     def _final_battle_jinjo_pads(self):
         '''Adds shock jump pads to the final battle near the jinjos'''
         self.grandmaster.logger.debug("Final Battle Jinjo Pads")
@@ -2582,7 +2582,7 @@ class World_Manipulation_Class():
                 },
             ]
         self.curr_setup_file._replace_each_object_parameters(search_string_list, replacement_dict_list)
-    
+
     def _final_battle_jinjonator_floor(self):
         '''Adds shock jump pads to the final battle near the jinjonator'''
         self.grandmaster.logger.debug("Final Battle Jinjonator Floor")
@@ -2635,9 +2635,9 @@ class World_Manipulation_Class():
                 },
             ]
         self.curr_setup_file._replace_each_object_parameters(search_string_list, replacement_dict_list)
-    
+
     ### GRUNTY SPECIFIC ###
-    
+
     def _final_battle_grunty_size(self, new_size):
         '''Changes the final battle Gruntilda size'''
         self.grandmaster.logger.debug("Final Battle Grunty Size")
@@ -2653,9 +2653,9 @@ class World_Manipulation_Class():
         for item_num in range(len(search_string_list)):
             replacement_dict = self._choose_from_list(replacement_dict_list, increment=item_num)
             self.curr_setup_file._edit_object(search_string_list[item_num], replacement_dict)
-    
+
     ### CAUSE I'M NICE ###
-    
+
     def _pity_1_up(self):
         '''Puts a 1-Up where you spawn after failing the Gruntilda Fight'''
         self.grandmaster.logger.debug("Pity 1-Up")
@@ -2667,7 +2667,7 @@ class World_Manipulation_Class():
         self.gruntildas_lair._setup_list[7]._edit_object("0C9201B001DE7D08002A000000000000", replacement_dict)
 
     ### MAIN ###
-    
+
     def _harder_final_battle_main(self, difficulty_level):
         '''Runs the functions for determining and implementing the final battle changes'''
         self.grandmaster.logger.info("Harder Final Battle Main")
@@ -2711,11 +2711,11 @@ class World_Manipulation_Class():
                 self._final_battle_grunty_size(50)
             elif(difficulty_level == 3):
                 self._final_battle_grunty_size(30)
-        
+
     #########################
     ### SCATTERED STRUCTS ###
     #########################
-    
+
     def _move_struct(self, item_index, level_collision_dict):
         '''Moves the structs on the map based on map collision'''
         curr_x = possible_negative(int(leading_zeros(self.curr_setup_file.mm[item_index + 4], 2) + leading_zeros(self.curr_setup_file.mm[item_index + 5], 2), 16))
@@ -2745,7 +2745,7 @@ class World_Manipulation_Class():
             self.curr_setup_file.mm[item_index + 7] = int(leading_zeros(new_y, 4)[2:], 16)
             self.curr_setup_file.mm[item_index + 8] = int(leading_zeros(new_z, 4)[:2], 16)
             self.curr_setup_file.mm[item_index + 9] = int(leading_zeros(new_z, 4)[2:], 16)
-    
+
     def _find_structs(self, level_collision_dict):
         '''Locates the structs on the map'''
         for struct_search_string in Structs.collectable_struct_id_list:
@@ -2762,18 +2762,18 @@ class World_Manipulation_Class():
                 if(item_index > -1):
                     self._move_struct(item_index, level_collision_dict)
                     item_index = item_index + 1
-    
+
     def _scattered_structs_main(self):
         '''Runs the functions for having the structs scattered around the map within their original voxels'''
         ttc_level_model = Level_Model_Class(self._file_dir, "101F0")
         ttc_level_model._find_collision_height()
         self.curr_setup_file = self.treasure_trove_cove._setup_list[0]
         self._find_structs(ttc_level_model._collision_height_dict)
-    
+
     #####################
     ### MISCELLANEOUS ###
     #####################
-    
+
     def _skip_furnace_fun(self):
         '''Changes the warps after the 765 Note Door and after Furnace Fun to link with each other'''
         # Floor 7 To Floor 8
@@ -2792,7 +2792,7 @@ class World_Manipulation_Class():
         replacement_dict = {8: 0x01, 9: 0x16}
         object_search_string = "FD93FF8204028D060078"
         self.curr_setup_file._edit_object(object_search_string, replacement_dict)
-    
+
     def _bigger_badder_mr_vile_main(self):
         '''Increases the size of Mr. Vile. Default size is 0x64 (100)'''
         self.curr_setup_file = self.bubblegloop_swamp._setup_list[1]
@@ -2802,7 +2802,7 @@ class World_Manipulation_Class():
             9: 0xF4,
             }
         self.curr_setup_file._edit_object(object_search_string, replacement_dict)
-    
+
     def _tiptup_choir_main(self):
         '''Places the tiptup choir in semi-randomly placed positions to make the challenge harder'''
         self.curr_setup_file = self.bubblegloop_swamp._setup_list[2]

@@ -37,7 +37,7 @@ from random import randint
 
 def setup_tmp_folder(file_dir):
     """Creates temporary folder that'll be used to store bin files and the randomized ROM."""
-    rando_rom_folder = f"{file_dir}Randomized_ROM\\"
+    rando_rom_folder = f"{file_dir}Randomized_ROM"
     if(not os.path.isdir(rando_rom_folder)):
         os.mkdir(rando_rom_folder)
     else:
@@ -60,7 +60,7 @@ def set_seed(seed_val=None):
 
 def make_copy_of_rom(seed_val, file_dir, original_rom):
     """Creates a copy of the rom that will be used for randomization"""
-    randomized_rom_file = f"{file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{str(seed_val)}.z64"
+    randomized_rom_file = f"{file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{str(seed_val)}.z64"
     shutil.copyfile(original_rom, randomized_rom_file)
     return randomized_rom_file
 

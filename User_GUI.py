@@ -129,7 +129,7 @@ tool_tips_dict = {
             "    came in, or the entrance that normally belongs to that world?",
         },
     "WITHIN_WORLD_WARPS": {
-        "FRAME": 
+        "FRAME":
             "NONE:\n" +
             "    Skips the setting.\n" +
             "SHUFFLE BY WORLD:\n" +
@@ -350,7 +350,7 @@ class WARNING_GUI():
         '''Cancel Option'''
         self.warning_window.quit()
         self.chosen_option = False
-    
+
     def main(self):
         '''Runs the warning window with Klungo's face'''
         # Klungo Talking
@@ -400,14 +400,14 @@ class User_GUI_Class():
         self.logger = logging.getLogger("Rotating Log")
         self.logger.setLevel(logging.INFO)
         FORMAT = '[%(levelname)s] %(asctime)-15s - %(funcName)s: %(message)s'
-        handler = RotatingFileHandler(f"{self.cwd}\Randomizer_Log_File.log", maxBytes=(512*1024), backupCount=1)
+        handler = RotatingFileHandler(f"{self.cwd}Randomizer_Log_File.log", maxBytes=(512*1024), backupCount=1)
         self.logger.addHandler(handler)
         logging.basicConfig(format=FORMAT)
-    
+
     ######################
     ### TOOL TIP CLASS ###
     ######################
-    
+
     class CreateToolTip(object):
         '''Create a tooltip for a given widget'''
         def __init__(self, widget, master, text='widget info'):
@@ -416,7 +416,7 @@ class User_GUI_Class():
             self.text = text
             self.widget.bind("<Enter>", self.enter)
             self.widget.bind("<Leave>", self.close)
-    
+
         def enter(self, event=None):
             '''When hovering over the tool tip icon, start displaying the tool tip'''
             try:
@@ -436,7 +436,7 @@ class User_GUI_Class():
                     label.pack(ipadx=1)
             except AttributeError:
                 pass
-    
+
         def close(self, event=None):
             '''When no longer hovering over the tool tip icon, stop displaying the tool tip'''
             try:
@@ -444,20 +444,20 @@ class User_GUI_Class():
                     self.tw.destroy()
             except Exception:
                 pass
-    
+
     #############################
     ### FILE BUTTON FUNCTIONS ###
     #############################
-    
+
     def _select_rom_file(self):
         '''Opens a browser to select the ROM file ending in .z64'''
         self.logger.info("Selecting ROM file")
-        filename = tkinter.filedialog.askopenfilename(initialdir=self.cwd, title="Select The BK ROM File", filetype =(("Rom Files","*.z64"),("all files","*.*")) )
+        filename = tkinter.filedialog.askopenfilename(initialdir=self.cwd, title="Select The BK ROM File", filetypes=(("Rom Files","*.z64"),("all files","*.*")) )
         if(not filename):
             return
         self.rom_file_entry.set(filename)
         self._verify_rom_file(filename)
-    
+
     def _verify_rom_file(self, filename):
         '''Compares the checksum of the selected ROM with known ROM file checksums to verify the version'''
         rom_version_dict = {
@@ -484,32 +484,32 @@ class User_GUI_Class():
             else:
                 Error_GUI(f"You're using either a modded game\n or a non-BK ROM ending in z64.\nPlease use a NTSC-U v1.0 BK ROM.")
                 return False
-    
+
     def _open_file(self, file_to_open):
         '''Generic open file button. If they use this for the README, bless their hearts'''
         self.logger.info(f"Openning File: {file_to_open}")
         os.startfile(file_to_open)
-    
+
     ###############################
     ### RANDOM BUTTON FUNCTIONS ###
     ###############################
-    
+
     def _random_seed(self):
         '''Randomly selects a seed'''
         self.logger.info("Select Random Seed")
         self.seed_value.set(str(randint(10000000, 19940303)))
-    
+
     def _random_note_value(self):
         '''Randomly selects a note value'''
         self.logger.info("Select Random Note Value")
         self.final_note_door_value.set("?")
-    
+
     def _random_puzzle_value(self):
         '''Randomly selects a puzzle value'''
         self.logger.info("Select Random Puzzle Value")
         self.final_puzzle_var.set(1)
         self.final_puzzle_value.set("?")
-    
+
     def _random_bk_model_preset(self):
         '''Randomly selects a BK Preset from the JSON file'''
         self.logger.info("Select Random BK Model Preset")
@@ -518,7 +518,7 @@ class User_GUI_Class():
             key_list.append(key)
         random_bk_model = choice(key_list)
         self.bk_model_var.set(random_bk_model)
-    
+
     def _random_hex(self, digit_len):
         '''Randomly generates hex values for the colors in BK'''
         max_num = "F" * digit_len
@@ -530,7 +530,7 @@ class User_GUI_Class():
         elif(digit_len == 6):
             random_hex_val = random_hex_val + "FF"
         return random_hex_val
-    
+
     def _random_bk_model_colors(self):
         '''Randomly generates all of the BK model's hex colors'''
         self.logger.info("Select Random Colors For BK")
@@ -547,7 +547,7 @@ class User_GUI_Class():
         self.wading_boots_var.set(self._random_hex(6))
         self.shorts_vertex_var.set(self._random_hex(6))
         self.shorts_texture_var.set(self._random_hex(4))
-    
+
     def _update_bk_model(self, *args):
         '''When selecting a BK preset, it will update the color fields with the proper hex values'''
         self.logger.info("Update BK Model")
@@ -586,7 +586,7 @@ class User_GUI_Class():
             self.shorts_texture_var.set("?")
             self.bk_model_image = tk.PhotoImage(file=f"{self.cwd}Pictures/BK_Models/Question_Mark.png")
             self.bk_model_image_label.config(image=self.bk_model_image)
-    
+
     def _enemy_option_select(self, *args):
         '''Shows enemy options if Randomize is selected'''
         self.logger.info("Enemy Option Select")
@@ -598,7 +598,7 @@ class User_GUI_Class():
             self.enemy_checklist_frame.grid_remove()
             self.non_softlock_enemies_button.grid_remove()
             self.clear_enemies_button.grid_remove()
-    
+
     def _select_non_softlock_enemies(self):
         '''Checks the boxes for all non-softlock enemies and unchecks all softlock enemies'''
         self.logger.info("Select Non-Softlock Enemies")
@@ -607,26 +607,26 @@ class User_GUI_Class():
                 self.enemy_checkbox_dict[enemy_name].set(0)
             else:
                 self.enemy_checkbox_dict[enemy_name].set(1)
-    
+
     def _remove_all_enemies(self):
         '''Unchecks all enemy checkboxes'''
         self.logger.info("Deselect All Enemies")
         for enemy_name in self.enemy_checkbox_dict:
             self.enemy_checkbox_dict[enemy_name].set(0)
-    
+
     def _all_custom_aesthetics(self):
         '''Selects all aesthetic MAP configs'''
         self.logger.info("Select All Custom Aesthetic")
         for custom_name in self.map_config_checkbox_dict:
             if(custom_name.startswith("(A)")):
                 self.map_config_checkbox_dict[custom_name].set(1)
-    
+
     def _no_customization(self):
         '''Removes all MAP configs'''
         self.logger.info("Removing Customizations")
         for custom_name in self.map_config_checkbox_dict:
             self.map_config_checkbox_dict[custom_name].set(0)
-    
+
     def _random_customization(self):
         '''Randomly selects MAP configs'''
         self.logger.info("Random Customization")
@@ -646,13 +646,13 @@ class User_GUI_Class():
             for checkbutton in self.customization_checkbuttons:
                 checkbutton.grid_remove()
             self.hiding_customization = True
-    
+
     def _default_starting_area(self):
         '''Selects a random starting area'''
         self.logger.info("Select Default Starting Area")
         self.new_area_var.set("SM - Main")
         self.skip_intro_cutscenes_var.set(0)
-    
+
     def _new_area_option(self, *args):
         '''If the starting area is not the default area, skip the intro cutscene'''
         self.logger.info("Selecting 'Skip Intro Cutscene'")
@@ -663,7 +663,7 @@ class User_GUI_Class():
             self.all_starting_moves_checkbutton.configure(state='disabled')
         else:
             self.all_starting_moves_checkbutton.configure(state='normal')
-    
+
     def _set_random_carry_capacities(self, *args):
         '''Select random capacities for blue eggs, red feathers, and gold feathers'''
         self.logger.info("Random Carry Capacities")
@@ -673,7 +673,7 @@ class User_GUI_Class():
         self.after_red_feather_carry_value.set("?")
         self.before_gold_feather_carry_value.set("?")
         self.after_gold_feather_carry_value.set("?")
-    
+
     def _lock_final_puzzle_value(self, *args):
         '''Displays options depending on whether final puzzle is selected'''
         self.logger.info("Lock Final Puzzle Value")
@@ -685,7 +685,7 @@ class User_GUI_Class():
         else:
             self.final_puzzle_entry.configure(state='normal')
             self.remove_floating_jiggies_checkbox.grid(row=3, column=3, padx=self.padx, pady=self.pady, sticky='w')
-    
+
     def _lock_struct_options(self, *args):
         '''Displays options depending on which struct option is selected'''
         self.logger.info("Lock Struct Options")
@@ -711,7 +711,7 @@ class User_GUI_Class():
             self.struct_note_count_dropdown.grid_remove()
             self.note_overflow_var.set("Allow Save & Quit/Reset")
             self.note_overflow_dropdown.grid_remove()
-    
+
     def _convert_rgb32_to_rgb16(self, _32_bit_color):
         '''Converts RGB32 colors to RBG16'''
         if(len(_32_bit_color) == 0):
@@ -814,7 +814,7 @@ class User_GUI_Class():
                 self.bk_model_dropdown.grid(row=0, column=1, columnspan=2, padx=self.padx, pady=self.pady, sticky='w')
                 self.bk_model_var.set("Default")
                 self.custom_bk_model_name_var.set(f"Custom Preset {self.custom_color_count}")
-    
+
     def _select_all_short_sounds(self):
         '''Selects all short sounds'''
         for short_sound_type in self.short_sounds_dict:
@@ -855,7 +855,7 @@ class User_GUI_Class():
         for short_sound_type in self.music_dict:
             for short_sound_name in self.music_dict[short_sound_type]:
                 (self.music_dict[short_sound_type][short_sound_name]).set(0)
-        
+
     def _skip_furnace_fun_checkbox_trace(self, *args):
         '''Shows options depending on whether skip furnace fun is selected'''
         if(self.skip_furnace_fun_var.get() == 1):
@@ -864,7 +864,7 @@ class User_GUI_Class():
         else:
             self.brentilda_hints_var.set("Base Game Brentilda Hints")
             self.brentilda_hints_dropdown.grid_remove()
-    
+
     def _gruntilda_difficulty_trace(self, *args):
         '''Shows options depending on whether harder grunty is selected'''
         if(self.gruntilda_difficulty_var.get() == 0):
@@ -881,11 +881,11 @@ class User_GUI_Class():
             self.grunty_size_checkbox.grid(row=5, column=1, padx=self.padx, pady=self.pady, sticky='w')
             self.monster_house_var.set(1)
             self.monster_house_checkbox.grid(row=6, column=1, padx=self.padx, pady=self.pady, sticky='w')
-    
+
     ################################
     ### RANDOMIZER SETTINGS CODE ###
     ################################
-    
+
     def _randomizer_settings_int_to_char_translator(self):
         '''Translates the randomizer settings code from numeric to char'''
 #         print(f"Randomizer Settings Generated Code: {self.randomizer_settings_code}")
@@ -896,12 +896,12 @@ class User_GUI_Class():
             ascii_code = chr(curr_val) + ascii_code
             randomizer_settings_code = randomizer_settings_code // 26
         self.randomizer_setting_code_value.set(ascii_code)
-    
+
     def _add_randomizer_settings_to_code(self, add_val, counter_add=1):
         '''Adds the numerical value of a setting to the randomizer settings code'''
         self.generated_randomizer_settings_code += (int(add_val) << self.randomizer_settings_count)
         self.randomizer_settings_count += counter_add
-    
+
     def _generate_randomizer_settings_code(self):
         '''Generates the randomizer settings code by turning all settings into numerical values'''
         self.logger.info("Generating Randomizer Settings Code")
@@ -1017,7 +1017,7 @@ class User_GUI_Class():
         self._add_randomizer_settings_to_code(self.ccw_open_var.get())
         self._randomizer_settings_int_to_char_translator()
 #         print(f"Code: {self.generated_randomizer_settings_code}")
-    
+
     def _randomizer_settings_char_to_int_translator(self):
         '''Translates the randomizer settings code from char to numeric'''
         ascii_code = self.randomizer_setting_code_value.get()
@@ -1026,7 +1026,7 @@ class User_GUI_Class():
             randomizer_settings_code += (ord(char_value) - 65) * (26 ** char_count)
         return randomizer_settings_code
 #         print(f"Randomizer Settings Applied Code:   {self.randomizer_settings_code}")
-    
+
     def _get_randomizer_setting(self, bit_count=1, options_list=None):
         '''Generates the randomizer settings code'''
         compare_to_value = (2 ** bit_count) - 1
@@ -1036,7 +1036,7 @@ class User_GUI_Class():
             return options_list[set_this_option]
         else:
             return set_this_option
-    
+
     def _apply_randomizer_settings_code(self):
         '''Applies settings based on the randomizer settings code provided'''
         self.logger.info("Apply Randomizer Settings Code")
@@ -1162,11 +1162,11 @@ class User_GUI_Class():
             self.ccw_open_var.set(self._get_randomizer_setting())
         except IndexError:
             Error_GUI(f"Error: Something went wrong with applying the settings.\nPlease check your settings code.")
-    
+
     ######################
     ### SETTING VALUES ###
     ######################
-    
+
     def _set_recommended_defaults(self):
         '''Sets the recommended defaults for first time users or when an error occurs with a loaded json file'''
         self.logger.info("Set Recommended Defaults")
@@ -1284,7 +1284,7 @@ class User_GUI_Class():
         # Click Clock Wood
         self.ccw_var.set("Season")
         self.ccw_open_var.set(0)
-    
+
     def _load_configuration(self, button_press=True, random_file=False):
         '''Opens a chosen JSON file and sets the parameters to match those'''
         self.logger.info("Load Configuration")
@@ -1755,7 +1755,7 @@ class User_GUI_Class():
             else:
                 Error_GUI(f"Error: {len(setting_not_found)} Settings Weren't Set!\nPlease manually set your settings.")
             return
-    
+
     def _set_random_settings(self):
         '''Opens a chosen JSON file and sets the parameters to match those'''
         self.logger.info("Set Random Settings")
@@ -1873,7 +1873,7 @@ class User_GUI_Class():
         # Click Clock Wood
         self.ccw_var.set(choice(["Season", "Within World"]))
         self.ccw_open_var.set(randint(0, 1))
-    
+
     def _save_current_configuration(self, button_press=True):
         '''Writes the current configuration to a JSON file'''
         self.logger.info("Save Current Configuration")
@@ -2001,15 +2001,15 @@ class User_GUI_Class():
                 pass # log something here?
         else:
             config_file = f"{self.cwd}Configurations/Last_Used_Configuration.json"
-            with open(config_file, "w+") as json_file: 
+            with open(config_file, "w+") as json_file:
                 json.dump(current_config, json_file, indent=4)
-    
+
     #########################################
     ### VERIFY SETTINGS BEFORE SUBMITTING ###
     #########################################
-    
+
     # GENERAL
-    
+
     def _check_rom_directory(self):
         '''Checks if ROM file ends in .z64 and is located in the folder with GZIP.EXE'''
         self.logger.info("Check ROM Directory")
@@ -2028,7 +2028,7 @@ class User_GUI_Class():
             Error_GUI(f"Rom Extention is not allowed: {rom_ext}")
             return False
         return self._verify_rom_file(rom_path)
-    
+
     def _check_seed_value(self):
         '''Verifies the seed value is either blank or only consists of digits'''
         self.logger.info("Check Seed Value")
@@ -2037,9 +2037,9 @@ class User_GUI_Class():
             Error_GUI(f"Seed value is not allowed: '{seed_val}'")
             return False
         return True
-    
+
     # COLLECTABLES
-    
+
     def _check_final_puzzle_value(self):
         '''Verifies the puzzle door limits are digits'''
         self.logger.info("Check Final Puzzle Value")
@@ -2060,7 +2060,7 @@ class User_GUI_Class():
             Error_GUI("Final Puzzle Value Must Be Less Than 51 When Removing Floating Jiggies.")
             return False
         return True
-    
+
     def _check_final_note_door_value(self):
         '''Verifies the note door limits are digits'''
         self.logger.info("Check Final Note Door Value")
@@ -2081,7 +2081,7 @@ class User_GUI_Class():
             Error_GUI("Final Note Door Value Must Be Less Than 900 Under These Settings.")
             return False
         return True
-    
+
     def _check_cheato_values(self):
         '''Verifies the carrying capacities before and after Cheato are digits between 0 and 255'''
         self.logger.info("Check Carrying Capacities")
@@ -2094,7 +2094,7 @@ class User_GUI_Class():
                 Error_GUI("Egg and Feather carrying capacities should be between 0 and 255.")
                 return False
         return True
-    
+
     def _check_starting_life_count(self):
         '''Verifies the starting life count is between 0 and 255'''
         self.logger.info("Check Life Count")
@@ -2103,9 +2103,9 @@ class User_GUI_Class():
             Error_GUI("Starting life count should be between 0 and 255.")
             return False
         return True
-    
+
     # SUBMIT
-    
+
     def _submit(self):
         '''If all input paramaters meet the requirements, we move onto actually randomizing the game'''
         self.logger.info("Submitting Configuration")
@@ -2118,11 +2118,11 @@ class User_GUI_Class():
             del progression_app
         else:
             self.logger.debug("At Least One Setting Seem To Be Invalid. Please check all settings.")
-    
+
     ######################
     ### FRONT END CODE ###
     ######################
-    
+
     def _main(self):
         '''Places all of the widgest on the GUI and runs the loop for the window'''
         self.logger.info("Creating GUI Main")

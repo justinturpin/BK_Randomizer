@@ -25,34 +25,34 @@ class Texture_Class():
         self._file_dir = file_dir
         self._address = address
         self._seed_val = seed_val
-        with open(f"{self._file_dir}Randomized_ROM\\{self._address}-Decompressed.bin", "r+b") as decomp_file:
+        with open(f"{self._file_dir}Randomized_ROM/{self._address}-Decompressed.bin", "r+b") as decomp_file:
 #         with open(f"{self._file_dir}{self._address}-Decompressed.bin", "r+b") as decomp_file:
             self.mm = mmap(decomp_file.fileno(), 0)
-    
+
     def _extract_header_info(self):
         self._texture_setup_offset = int(leading_zeros(self.mm[8], 2) + leading_zeros(self.mm[9], 2), 16)
         self._texture_count = self.mm[self._texture_setup_offset + 5]
         self._textures_offset = self._texture_setup_offset + (0x10 * self._texture_count) + 0x8
-    
+
     def _extract_texture_setup_info(self):
         self._texture_list = []
         texture_count = 0
         for text_header_index in range(self._texture_setup_offset + 8, self._texture_setup_offset + 8 + (self._texture_count*16), 16):
             self._texture_list.append({
-                "Texture_Start": int(leading_zeros(self.mm[text_header_index], 2) + 
-                                     leading_zeros(self.mm[text_header_index + 1], 2) + 
-                                     leading_zeros(self.mm[text_header_index + 2], 2) + 
+                "Texture_Start": int(leading_zeros(self.mm[text_header_index], 2) +
+                                     leading_zeros(self.mm[text_header_index + 1], 2) +
+                                     leading_zeros(self.mm[text_header_index + 2], 2) +
                                      leading_zeros(self.mm[text_header_index + 3], 2), 16)
                                 + self._textures_offset,
                 "Texture_Type": self.mm[text_header_index + 5],
                 "X_Length": self.mm[text_header_index + 8],
                 "Y_Length": self.mm[text_header_index + 9],
                 })
-            with open(f"{self._file_dir}Randomized_ROM\\{self._address}-Texture_{leading_zeros(str(texture_count), 3)}.bin", "w+b") as texture_file:
+            with open(f"{self._file_dir}Randomized_ROM/{self._address}-Texture_{leading_zeros(str(texture_count), 3)}.bin", "w+b") as texture_file:
                 for index in range(self._texture_list[-1]["Texture_Start"], self._texture_list[-1]["Texture_Start"] + (self._texture_list[-1]["X_Length"] * self._texture_list[-1]["Y_Length"])//2 + 0x20):
                     texture_file.write(bytes.fromhex(leading_zeros(self.mm[index], 2)))
             texture_count += 1
-    
+
     def _rearrange_textures(self, new_order_dict):
         texture_count = 0
         next_texture_start = 0
@@ -79,7 +79,7 @@ class Texture_Class():
                     self.mm[index] = mm_texture[index_count]
                     index_count += 1
             texture_count += 1
-    
+
     def _flip_texture(self, rgba_index_list, x_axis=True, y_axis=True):
         if(x_axis):
             for rgba_index in rgba_index_list:
@@ -102,7 +102,7 @@ class Texture_Class():
                     v_str = leading_zeros(v_value, 4)
                 self.mm[rgba_index + 0x8] = int(v_str[:2], 16)
                 self.mm[rgba_index + 0x9] = int(v_str[2:], 16)
-        
+
 
 if __name__ == '__main__':
     pass

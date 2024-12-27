@@ -20,10 +20,10 @@ class CleanUp():
     def __init__(self, file_dir):
         '''Initializes clean up class'''
         self._file_dir = file_dir
-    
+
     def _remove_bin_files(self, it_errored=False):
         """Removes compressed and decompressed bin files created during the randomization"""
-        randomized_rom_dir = f"{self._file_dir}Randomized_ROM\\"
+        randomized_rom_dir = f"{self._file_dir}Randomized_ROM"
         for filename in os.listdir(randomized_rom_dir):
             file_path = os.path.join(randomized_rom_dir, filename)
             try:

@@ -11,6 +11,8 @@ Created on Aug 24, 2021
 from mmap import mmap
 import subprocess
 import os
+from pathlib import Path
+import gzip
 
 ####################
 ### FILE IMPORTS ###
@@ -128,13 +130,19 @@ class Compressor():
         self.master = master
         self._seed_val = seed_val
         self._file_dir = file_dir
+        self._rom_dir = Path(self._file_dir, "Randomized_ROM")
+        self._rom_dir.mkdir(exist_ok=True)
+
+        print(f"Created path {self._rom_dir}")
 
     def _extract_unchanged_setup(self, addr):
         '''For every setup file not randomized, pull it out of the ROM into a compressed file.'''
-        with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "rb") as file:
+        # with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "rb") as file:
+        with Path(self._rom_dir, f"Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64").open("rb") as file:
             file_bytes = file.read()
         (address1, address2) = get_address_endpoints(file_bytes, addr)
-        with open(f"{self._file_dir}Randomized_ROM/{addr}-Randomized_Compressed.bin", "w+b") as comp_file:
+        # with open(f"{self._file_dir}Randomized_ROM/{addr}-Randomized_Compressed.bin", "w+b") as comp_file:
+        with Path(self._rom_dir, f"{addr}-Randomized_Compressed.bin").open("w+b") as comp_file:
             for index in range(address1, address2):
                 hex_string = str(hex(file_bytes[index]))[2:]
                 if(len(hex_string) < 2):
@@ -143,18 +151,32 @@ class Compressor():
 
     def _compress_file(self, file_name):
         '''Compresses the hex file that was extracted from the main ROM file'''
-        cmd = f"\"{self._file_dir}GZIP.EXE\" -c \"{self._file_dir}Randomized_ROM/{file_name.upper()}-Decompressed.bin\" > \"{self._file_dir}Randomized_ROM/{file_name.upper()}-New_Compressed.bin\""
-        subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
-    
+        # cmd = f"\"gzip -c \"{self._file_dir}Randomized_ROM/{file_name.upper()}-Decompressed.bin\" > \"{self._file_dir}Randomized_ROM/{file_name.upper()}-New_Compressed.bin\""
+        decompressed_path = self._rom_dir / f"{file_name.upper()}-Decompressed.bin"
+        compressed_path = self._rom_dir / f"{file_name.upper()}-New_Compressed.bin"
+        cmd = ["gzip", "-c", str(decompressed_path)]
+        with compressed_path.open("wb") as comp_file:
+            compressed_gzip_exe = subprocess.check_output(cmd)
+            compressed_gzip_native = gzip.GzipFile(filename=f"{file_name.upper()}-New_Compressed.bin").compress(decompressed_path.read_bytes(), compresslevel=6)
+            if compressed_gzip_exe[10:-8] == compressed_gzip_native[10:-8]:
+                print(f"Files match: {file_name.upper()}-New_Compressed.bin")
+            else:
+                print(f"Files do not match: {file_name.upper()}-New_Compressed.bin")
+                print(compressed_gzip_exe[10:80])
+                print(compressed_gzip_native[10:80])
+            comp_file.write(compressed_gzip_exe)
+
     def _post_compress_operations(self, file_name, header, footer, decomp_len, padding_text="AA"):
-        with open(f"{self._file_dir}Randomized_ROM/{file_name}-New_Compressed.bin", "r+b") as comp_file:
+        # with open(f"{self._file_dir}Randomized_ROM/{file_name}-New_Compressed.bin", "r+b") as comp_file:
+        with Path(self._rom_dir, f"{file_name}-New_Compressed.bin").open("r+b") as comp_file:
             mm_comp = mmap(comp_file.fileno(), 0)
             comp_file_len = len(mm_comp)
             header_end = ""
             for header_val in header[-4:]:
                 header_end += header_val
             header_end_index = mm_comp.find(bytes.fromhex(header_end)) + 4
-            with open(f"{self._file_dir}Randomized_ROM/{file_name}-Randomized_Compressed.bin", "w+b") as new_comp_file:
+            # with open(f"{self._file_dir}Randomized_ROM/{file_name}-Randomized_Compressed.bin", "w+b") as new_comp_file:
+            with Path(self._rom_dir, f"{file_name}-Randomized_Compressed.bin").open("w+b") as new_comp_file:
                 new_comp_file.write(bytes.fromhex("1172"))
                 new_comp_file.write(bytes.fromhex(decomp_len))
                 new_comp_len = 6
@@ -166,16 +188,18 @@ class Compressor():
                     needs_padding = 8 - (new_comp_len % 8)
                     for index in range(new_comp_len, new_comp_len + needs_padding):
                         new_comp_file.write(bytes.fromhex(padding_text))
-    
+
     def _insert_into_rom_by_pointer(self, setup_pointer_start, setup_pointer_end, additional_skip_these_pointer_list=[]):
         for index_dec in range(setup_pointer_start, setup_pointer_end + 1, 8):
-            with open(f"{self._file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+            # with open(f"{self._file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+            with Path(self._rom_dir, f"Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64").open("r+b") as bk_rom:
                 mm_bk_rom = mmap(bk_rom.fileno(), 0)
                 index_hex_str = str(hex(index_dec))[2:]
                 if(index_hex_str in additional_skip_these_pointer_list):
                     self.skip_this_setup(mm_bk_rom, index_dec)
                 else:
-                    with open(f"{self._file_dir}Randomized_ROM\\{index_hex_str}-Randomized_Compressed.bin", "r+b") as setup_bin:
+                    # with open(f"{self._file_dir}Randomized_ROM\\{index_hex_str}-Randomized_Compressed.bin", "r+b") as setup_bin:
+                    with Path(self._rom_dir, f"{index_hex_str}-Randomized_Compressed.bin").open("r+b") as setup_bin:
                         setup_content = setup_bin.read()
                         # Find The Pointer Start
                         pointer_start = ""
@@ -200,11 +224,12 @@ class Compressor():
         for offset in range(4):
             pointer_start += leading_zeros(mm_bk_rom[setup_pointer_end + 8 + offset], 2)
         address_next_start = int(f"0x{pointer_start}", 16) + int("0x10CD0", 16)
-        with open(f"{self._file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+        # with open(f"{self._file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+        with Path(self._rom_dir, f"Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64").open("r+b") as bk_rom:
             mm_bk_rom = mmap(bk_rom.fileno(), 0)
             for index in range(address_start + len(setup_content), address_next_start):
                 mm_bk_rom[index] = 0xAA
-    
+
     def _insert_into_rom_by_location(self, section_dict):
         for subsection in section_dict:
             if((subsection == "Rusty_Bucket_Bay") and (self.master.buttons_var.get() == 0)):
@@ -214,7 +239,8 @@ class Compressor():
             else:
                 address_start = None
                 for subsection_info in section_dict[subsection]:
-                    with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+                    # with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+                    with Path(self._rom_dir, f"Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64").open("r+b") as bk_rom:
                         mm_bk_rom = mmap(bk_rom.fileno(), 0)
                         file_name = subsection_info[0].split(",")[0]
                         with open(f"{self._file_dir}Randomized_ROM/{file_name}-Randomized_Compressed.bin", "r+b") as setup_bin:
@@ -231,7 +257,7 @@ class Compressor():
                                 mm_bk_rom[index] = setup_content[setup_count]
                                 setup_count += 1
                         address_start += len(setup_content)
-    
+
     def _adjust_bootloader_code(self, mm, code_address, subsection):
         upper = code_address // 0x10000
         lower = code_address % 0x10000
@@ -241,15 +267,15 @@ class Compressor():
         mm[bootloader_asm_dict[subsection]["ROM_Offset_Upper"] + 1] = int(leading_zeros(upper, 4)[2:], 16)
         mm[bootloader_asm_dict[subsection]["ROM_Offset_Lower"]] = int(leading_zeros(lower, 4)[:2], 16)
         mm[bootloader_asm_dict[subsection]["ROM_Offset_Lower"] + 1] = int(leading_zeros(lower, 4)[2:], 16)
-    
+
     def _adjust_bootloader_vars(self, mm, code_address, address_end, comp_size):
         end_address = code_address + comp_size
         if(address_end > end_address):
             for index in range(end_address, address_end):
                 mm[index] = 0
-    
+
     def _verify_pointer_header(self, setup_pointer_start, setup_pointer_end):
-        with open(f"{self._file_dir}Randomized_ROM\\Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
+        with open(f"{self._file_dir}Randomized_ROM/Banjo-Kazooie_Randomized_Seed_{self._seed_val}.z64", "r+b") as bk_rom:
             mm_bk_rom = mmap(bk_rom.fileno(), 0)
             for pointer_index in range(setup_pointer_start, setup_pointer_end + 1, 8):
                 address_start = int((leading_zeros(mm_bk_rom[pointer_index], 2) +
@@ -302,7 +328,7 @@ class Compressor():
         # Insert the files and verify the pointers are correct
         self._insert_into_rom_by_pointer(setup_pointer_start, setup_pointer_end, additional_skip_these_pointer_list)
         self._verify_pointer_header(setup_pointer_start, setup_pointer_end)
-    
+
     def _location_compression_main(self, section_dict):
         # For every modified file,
         #     Compress it and reformat it to prepare for insertion

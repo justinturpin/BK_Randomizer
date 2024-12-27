@@ -54,12 +54,12 @@ class Decompressor():
             #logger.error("Error: Please verify ROM is v1.0")
             #error_window("Error During Randomization")
             raise SystemExit
-    
+
     def _decompress_file(self, compressed_file):
         """Decompresses the hex file that was extracted from the main ROM file"""
-        cmd = f"\"{self._file_dir}GZIP.EXE\" -dc \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Compressed.bin\" > \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Decompressed.bin\""
+        cmd = f"gzip -dc \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Compressed.bin\" > \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Decompressed.bin\""
         subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
-    
+
     def _decompressor(self, id_dict, address_type="Pointer"):
         """Finds the start and end of a file from the pointer and extracts the content. Then runs function to decompress the file."""
         for location_name in id_dict:
@@ -74,7 +74,7 @@ class Decompressor():
                     file_pointer = addr.split(",")[0]
                 self._verify_original_header(self._file_bytes, address1)
                 # Write Compressed File
-                with open(f"{self._file_dir}Randomized_ROM\\{file_pointer}-Compressed.bin", "w+b") as comp_file:
+                with open(f"{self._file_dir}Randomized_ROM/{file_pointer}-Compressed.bin", "w+b") as comp_file:
                     # Write Header
                     for hex_val in header:
                         comp_file.write(bytes.fromhex(hex_val))
@@ -90,7 +90,7 @@ class Decompressor():
                         comp_file.write(bytes.fromhex(hex_val))
                 # Decompress File
                 self._decompress_file(file_pointer)
-    
+
     def _decompress_main(self):
         """Extracts a chunk of hex values from the main ROM file into a new file and prepares the new file for decompression by providing the correct header and footer"""
         self._decompressor(setup_ids, address_type="Pointer")
