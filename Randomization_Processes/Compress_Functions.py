@@ -13,6 +13,7 @@ import subprocess
 import os
 from pathlib import Path
 import gzip
+from bkrando import gznative
 
 ####################
 ### FILE IMPORTS ###
@@ -154,17 +155,8 @@ class Compressor():
         # cmd = f"\"gzip -c \"{self._file_dir}Randomized_ROM/{file_name.upper()}-Decompressed.bin\" > \"{self._file_dir}Randomized_ROM/{file_name.upper()}-New_Compressed.bin\""
         decompressed_path = self._rom_dir / f"{file_name.upper()}-Decompressed.bin"
         compressed_path = self._rom_dir / f"{file_name.upper()}-New_Compressed.bin"
-        cmd = ["gzip", "-c", str(decompressed_path)]
-        with compressed_path.open("wb") as comp_file:
-            compressed_gzip_exe = subprocess.check_output(cmd)
-            compressed_gzip_native = gzip.GzipFile(filename=f"{file_name.upper()}-New_Compressed.bin").compress(decompressed_path.read_bytes(), compresslevel=6)
-            if compressed_gzip_exe[10:-8] == compressed_gzip_native[10:-8]:
-                print(f"Files match: {file_name.upper()}-New_Compressed.bin")
-            else:
-                print(f"Files do not match: {file_name.upper()}-New_Compressed.bin")
-                print(compressed_gzip_exe[10:80])
-                print(compressed_gzip_native[10:80])
-            comp_file.write(compressed_gzip_exe)
+        compressed_data = gznative.compress(decompressed_path.read_bytes(), file_name=decompressed_path.name)
+        compressed_path.write_bytes(compressed_data)
 
     def _post_compress_operations(self, file_name, header, footer, decomp_len, padding_text="AA"):
         # with open(f"{self._file_dir}Randomized_ROM/{file_name}-New_Compressed.bin", "r+b") as comp_file:

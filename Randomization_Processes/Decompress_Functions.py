@@ -28,6 +28,8 @@ Created on Aug 24, 2021
 ######################
 
 import subprocess
+from bkrando import gznative
+from pathlib import Path
 
 ####################
 ### FILE IMPORTS ###
@@ -55,10 +57,14 @@ class Decompressor():
             #error_window("Error During Randomization")
             raise SystemExit
 
-    def _decompress_file(self, compressed_file):
+    def _decompress_file(self, compressed_file: str) -> None:
         """Decompresses the hex file that was extracted from the main ROM file"""
-        cmd = f"gzip -dc \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Compressed.bin\" > \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Decompressed.bin\""
-        subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
+        # cmd = f"gzip -dc \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Compressed.bin\" > \"{self._file_dir}Randomized_ROM/{compressed_file.upper()}-Decompressed.bin\""
+        # subprocess.Popen(cmd, universal_newlines=True, shell=True).communicate()
+        compressed_path = Path(self._file_dir, "Randomized_ROM", f"{compressed_file.upper()}-Compressed.bin")
+        decompressed_path = Path(self._file_dir, "Randomized_ROM", f"{compressed_file.upper()}-Decompressed.bin")
+        decompressed_data = gznative.decompress(compressed_path.read_bytes())
+        decompressed_path.write_bytes(decompressed_data)
 
     def _decompressor(self, id_dict, address_type="Pointer"):
         """Finds the start and end of a file from the pointer and extracts the content. Then runs function to decompress the file."""

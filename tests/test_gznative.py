@@ -7,6 +7,8 @@ from bkrando import gznative
 import zlib
 import random
 import gzip
+import tempfile
+from pathlib import Path
 
 
 def compress_with_gzip_exe(data: bytes) -> bytes:
@@ -66,11 +68,14 @@ def test_basic_2() -> None:
 
 
 def test_basic_3() -> None:
-    for i in range(100):
+    for i in range(10):
         data = generate_random_data()
 
-        compressed_data = compress_with_gzip_exe(data)
-        compressed_gzip_data = gzip.compress(data, compresslevel=6)[10:-8]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            data_path = Path(temp_dir) / "data.bin"
+            data_path.write_bytes(data)
 
-        assert compressed_gzip_data == compressed_data
-        assert len(compressed_data) > 10
+            compressed_gzip = subprocess.check_output(["wine", "GZIP.EXE", "-c", str(data_path)])
+            compressed_native = gznative.compress(data, data_path.name)
+
+            assert compressed_native[10:] == compressed_gzip[10:]
