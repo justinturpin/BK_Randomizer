@@ -27,8 +27,8 @@ Created on Aug 24, 2021
 ### PYTHON IMPORTS ###
 ######################
 
-import subprocess
 from bkrando import gznative
+from bkrando.globals import rando_globals
 from pathlib import Path
 
 ####################
@@ -43,7 +43,7 @@ from Randomization_Processes.Common_Functions import get_address_endpoints
 #################
 
 class Decompressor():
-    def __init__(self, file_dir, randomized_rom_path):
+    def __init__(self, file_dir: str, randomized_rom_path: str) -> None:
         """Initializes the decompressor"""
         self._file_dir = file_dir
         with open(randomized_rom_path, "rb") as file:
@@ -67,17 +67,29 @@ class Decompressor():
         decompressed_path.write_bytes(decompressed_data)
 
     def _decompressor(self, id_dict, address_type="Pointer"):
-        """Finds the start and end of a file from the pointer and extracts the content. Then runs function to decompress the file."""
+        """
+        Finds the start and end of a file from the pointer and extracts the content.
+        Then runs function to decompress the file.
+        """
+        rom_data = rando_globals.get_rom_data()
+        chunk_manager = rando_globals.get_chunk_manager()
         for location_name in id_dict:
             for (addr, header, footer, lead, tail) in id_dict[location_name]:
                 # Get Address Endpoints
                 if(address_type == "Pointer"):
                     (address1, address2) = get_address_endpoints(self._file_bytes, addr)
                     file_pointer = addr[2:]
+                    # New code
+                    real_addr = rom_data.lookup_dword(int(addr, 16)) + 0x10CD0
+                    decompressed_data = rom_data.get_uncompressed_data(real_addr)
+                    chunk_manager.insert(real_addr, decompressed_data)
                 else:
                     address1 = int(addr.split(",")[0], 16)
                     address2 = int(addr.split(",")[1], 16)
                     file_pointer = addr.split(",")[0]
+                    # New code
+                    decompressed_data = rom_data.get_uncompressed_data(address1)
+                    chunk_manager.insert(address1, decompressed_data)
                 self._verify_original_header(self._file_bytes, address1)
                 # Write Compressed File
                 with open(f"{self._file_dir}Randomized_ROM/{file_pointer}-Compressed.bin", "w+b") as comp_file:
@@ -105,5 +117,5 @@ class Decompressor():
         self._decompressor(texture_setup_ids, address_type="Pointer")
         self._decompressor(level_model_ids, address_type="Pointer")
 
-if __name__ == '__main__':
+if __name__ == '__main__':#
     pass

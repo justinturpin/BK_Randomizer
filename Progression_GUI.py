@@ -115,6 +115,7 @@ from tkinter import ttk
 from tkinter import HORIZONTAL
 import threading
 import gc
+from bkrando.globals import rando_globals
 
 ####################
 ### FILE IMPORTS ###
@@ -156,7 +157,7 @@ class Progression_GUI_Class():
                 "Pumpkin": 20,
                 "Bee": 25
                 }
-    
+
     class App_Variable_Label():
         '''A text box that can altered after creation'''
         def __init__(self, window, label_text):
@@ -172,7 +173,7 @@ class Progression_GUI_Class():
         def pack_label(self):
             '''Displays label'''
             self.label.pack()
-    
+
     class App_ProgressBar():
         '''A progress bar'''
         def __init__(self, window, bar_length=390, bar_mode='determinate'):
@@ -187,7 +188,7 @@ class Progression_GUI_Class():
         def pack_bar(self):
             '''Displays progress bar'''
             self.progressbar.pack(padx=5, pady=5)
-    
+
     def _hidden_random_values(self):
         '''Calculates hidden values'''
         self.master.logger.info("Hidden Random Values")
@@ -284,7 +285,7 @@ class Progression_GUI_Class():
         # Cheat Sheet
         with open(f"{self.master.cwd}Randomized_ROM/HIDDEN_VALUES_CHEAT_SHEET_{self.seed_val}.txt", "w+") as f:
             f.write(cheat_sheet)
-    
+
     def _setup(self):
         '''Creates the randomized ROM folder with a copy of the original ROM file'''
         self.master.logger.info("Randomization Setup")
@@ -292,15 +293,16 @@ class Progression_GUI_Class():
         self.seed_val = set_seed(self.master.seed_value.get())
         self._hidden_random_values()
         self.randomized_rom_path = make_copy_of_rom(self.seed_val, self.master.cwd, self.rom_path)
+        rando_globals.setup(self.rom_path)
         gc.enable()
-    
+
     def _decompress_main(self):
         '''Runs the decompression functions'''
         self.master.logger.info("Decompress Main")
         decompressor = Decompressor(self.master.cwd, self.randomized_rom_path)
         decompressor._decompress_main()
         del decompressor
-    
+
     def _randomize_world(self):
         '''Runs the world manipulation functions, including world specific functions'''
         self.master.logger.info("Start Of Randomize World")
@@ -611,7 +613,7 @@ class Progression_GUI_Class():
             raise
         del misc_manip
         self.master.logger.info("End of Misc Options")
-    
+
     def _perform_checksum(self):
         '''Runs the checksum functions'''
         self.master.logger.info("Performing Checksum")
@@ -619,7 +621,7 @@ class Progression_GUI_Class():
         bk_checksum_obj._main()
         del bk_checksum_obj
         self.master.logger.info("Checksum Complete")
-    
+
     def _compress_main(self):
         '''Runs the compression functions'''
         self.master.logger.info("Compressing Main Start")
@@ -627,7 +629,7 @@ class Progression_GUI_Class():
         compressor._main()
         del compressor
         self.master.logger.info("Compression Main End")
-    
+
     def _crc_calc(self):
         '''Runs the CRC functions'''
         self.master.logger.info("Running CRC Functions")

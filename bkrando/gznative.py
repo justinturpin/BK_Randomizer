@@ -3,9 +3,9 @@ Native implementation of gzip file decompression that is compatible with what
 the Nintendo 64 Banjo-Kazooie project would have used in 1996.
 """
 
-import zlib
 import gzip
 import io
+
 
 def decompress(compressed_data: bytes) -> bytes:
     """
@@ -26,7 +26,7 @@ def compress(data: bytes, file_name: str) -> bytes:
     """
 
     file_obj = io.BytesIO()
-    gzip_file = gzip.GzipFile(file_name, 'wb', compresslevel=6, fileobj=file_obj)
+    gzip_file = gzip.GzipFile(file_name, "wb", compresslevel=6, fileobj=file_obj)
     gzip_file.write(data)
     gzip_file.close()
 

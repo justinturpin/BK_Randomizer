@@ -9,7 +9,6 @@ Created on Aug 24, 2021
 ######################
 
 import json
-import subprocess
 
 #################
 ### FUNCTIONS ###
@@ -41,7 +40,7 @@ def dump_json(json_file_dir, use_this_dict):
 #     cmd = f"{xdelta_path}xdelta.exe -d -s {old_file_path} {delta_file_path} {new_file_path}"
 #     print(cmd)
 #     subprocess.Popen(cmd.split(), shell=True).communicate()
-# 
+#
 # def create_patch(xdelta_path, old_file_path, new_file_path, delta_file_path):
 #     # xdelta -e -s old_file new_file delta_file
 #     cmd = f"{xdelta_path}xdelta.exe -e -s {old_file_path} {new_file_path} {delta_file_path}"
